@@ -1,12 +1,6 @@
-My first attempt at an iOS app.
-
 This is a basic Shoppo search, like www.shoppo.co.nz
-
-I've just started playing with xcode and swift, and this is what I have built so far. 
-
 It just sends a request to 
 https://www.shoppo.co.nz/app/?vq=all
-
 with the search term being vq.
 
 That's it so far, results are a JSON string with 100 results.
