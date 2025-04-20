@@ -5,6 +5,7 @@ struct Product: Identifiable, Decodable {
     var id: String { vendor_id + "." + product_id }
     let name: String
     let price: String
+    let sale_price: String
     let image: String
     let url: String
     let product_id: String
@@ -12,7 +13,8 @@ struct Product: Identifiable, Decodable {
 
     enum CodingKeys: String, CodingKey {
         case name
-        case price
+        case price = "price"
+        case sale_price = "sale_price"
         case image = "image"
         case url = "url"
         case product_id = "product_id"
