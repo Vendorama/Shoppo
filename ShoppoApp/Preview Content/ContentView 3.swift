@@ -1,22 +1,23 @@
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = SearchViewModel()
-    let columns = [GridItem(.flexible())]
+    let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     @FocusState var textFieldIsFocused: Bool
+    @State private var imageLoaded = false
     
     var body: some View {
         NavigationView {
             VStack {
                 // Logo at top
-                
-                AsyncImage(url: URL(string: "https://www.shoppo.co.nz/img/shoppo.png")) { image in
+                WebImage(url: URL(string: "https://www.shoppo.co.nz/img/shoppo.gif")) { image in
                     image.resizable()
                 } placeholder: {
                     ProgressView()
                 }
-                .frame(width: 128, height: 32)
+                .frame(width: 119, height: 30)
                 //.padding(.top)
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 
@@ -28,11 +29,11 @@ struct ContentView: View {
                     //.textFieldStyle(RoundedBorderTextFieldStyle())
                     //.padding(EdgeInsets(top: 1, leading: 0, bottom: 3, trailing: 0))
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: UIScreen.main.bounds.width - 80)
+                    .frame(width: UIScreen.main.bounds.width - 70)
                     .offset(x: 13.0, y: 0.0)
                     
                     
-                    .padding(7)
+                    .padding(5)
                     .overlay(
                         RoundedRectangle(cornerRadius: 25)
                             .stroke(Color.lightGray)
@@ -55,67 +56,28 @@ struct ContentView: View {
                     }
                 }
 
+                
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(viewModel.results) { product in
-                            VStack {
-                                
-                                Button(action: {
-                                    guard let thisURL = URL(string: product.url),
-                                        UIApplication.shared.canOpenURL(thisURL) else {
-                                        return
-                                    }
-                                    UIApplication.shared.open(thisURL,
-                                        options: [:],
-                                        completionHandler: nil)
-                                }) {
-                                    
-                                    AsyncImage(url: URL(string: product.image)) { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFit() // preserve original aspect ratio
-                                            .frame(width: 300, height: 300) // fixed height
-                                            .clipped()
-                                            .buttonStyle(PlainButtonStyle())
-                                        
-                                    } placeholder: {
-                                        ProgressView()
-                                    }
+                    LazyVGrid(columns: columns, spacing: 1) {
+                        ForEach(viewModel.products) { product in
+                            ProductRowView(product: product)
+                                .onAppear {
+                                   // viewModel.loadNextPageIfNeeded(currentItem: product)
                                 }
-                                
-                                
-                                
-                                
-                                //.frame(height: 200)
-                                //.aspectRatio(contentMode: .fit)
-                                
-                                let link = "[\(product.name)](\(product.url))"
-                                
-                                Text(product.price)
-                                    //.font(.headline)
-                                    //.font(.system(size: 60))
-                                    .font(.system(size: 20, weight: .bold))
-                                    //.foregroundColor(.secondary)
-                                    //.tint(.black)
-                                
-                                Text(.init(link))
-                                    .font(.subheadline)
-                                    .lineLimit(2)
-                                    .multilineTextAlignment(.center)
-                                    .tint(.gray)
-                            }
-                            .padding()
-                            .background(Color(.systemBackground))
-                            //.cornerRadius(8)
-                            //.shadow(radius: 12)
+                        }
+
+                        if viewModel.isLoading {
+                            ProgressView()
+                                .padding()
                         }
                     }
-                    .padding()
                 }
+                .padding(5)
+                
             }
             .onAppear {
-                // 🔁 Trigger initial search with empty query
-                if viewModel.results.isEmpty {
+                // Trigger initial search with empty query
+                if viewModel.products.isEmpty {
                     viewModel.search()
                 }
             }
