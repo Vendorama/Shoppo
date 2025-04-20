@@ -27,7 +27,7 @@ struct ProductRowView: View {
                         //.placeholder(ProgressView().frame(width: 125, height: 145))
                         .resizable()
                         .scaledToFit()
-                        //.frame(width: 180, height: 180)
+                        .frame(width: 180, height: 180)
                         .clipped()
                         .opacity(imageLoaded ? 1 : 0)
                         //.animation(.easeIn(duration: 0.3), value: imageLoaded)

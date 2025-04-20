@@ -42,7 +42,7 @@ struct ContentView: View {
                             .offset(x: 13.0, y: 0.0)
                             
                             
-                            .padding(5)
+                            .padding(4)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 25)
                                     .stroke(Color.lightGray)
@@ -60,7 +60,7 @@ struct ContentView: View {
                             }) {
                                 Image(systemName: "magnifyingglass")
                                     .padding(EdgeInsets(top: 1, leading: 0, bottom: 5, trailing: 0))
-                                    .offset(x: -20.0, y: 1.0)
+                                    .offset(x: -17.0, y: 1.0)
                                     .foregroundColor(.lightGray)
                             }
                         }
@@ -68,7 +68,7 @@ struct ContentView: View {
                         
                         ScrollView {
                             if viewModel.canGoBack {
-                                Button("< Back to Previous Search") {
+                                Button("< Back ") {
                                     viewModel.goBack()
                                 }
                                 .padding(2)
@@ -76,6 +76,16 @@ struct ContentView: View {
                                 .font(.system(size: 10))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .offset(x: 20.0, y: 1.0)
+                            }
+                            
+                            if viewModel.query == "" && viewModel.searchType == "search" {
+                                Text("New Arrivals")
+                                    .padding(2)
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: 12))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .offset(x: 20.0, y: 1.0)
+                                    .bold()
                             }
                             LazyVGrid(columns: columns, spacing: 1) {
                                 ForEach(viewModel.products) { product in

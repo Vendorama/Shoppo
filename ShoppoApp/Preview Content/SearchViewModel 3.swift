@@ -10,6 +10,7 @@ class SearchViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var hasMorePages: Bool = true
     @Published var searchID = UUID()
+    @Published var searchType: String = "search"
     
     //private var cancellables = Set<AnyCancellable>()
     private var currentPage = 1
@@ -27,6 +28,7 @@ class SearchViewModel: ObservableObject {
             currentPage = 1
             hasMorePages = true
             searchID = UUID() // triggers scroll-to-top
+            searchType = "search"
         //}
         
         guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
@@ -57,6 +59,7 @@ class SearchViewModel: ObservableObject {
         self.isLoading = true
         self.hasMorePages = false
         self.currentPage = 1
+        searchType = "related"
 
         let urlString = "https://www.shoppo.co.nz/app/?vs=\(productID)"
         guard let url = URL(string: urlString) else {
@@ -87,5 +90,6 @@ class SearchViewModel: ObservableObject {
     var canGoBack: Bool {
         !historyStack.isEmpty
     }
+    
 
 }
