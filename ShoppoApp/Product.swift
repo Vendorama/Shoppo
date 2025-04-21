@@ -1,7 +1,7 @@
 
 import Foundation
 
-struct Product: Identifiable, Decodable {
+struct Product: Identifiable, Equatable, Decodable {
     var id: String { vendor_id + "." + product_id }
     let name: String
     let price: String

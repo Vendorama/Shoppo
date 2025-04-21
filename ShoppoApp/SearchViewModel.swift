@@ -1,16 +1,19 @@
-
+import SwiftUI
 import Foundation
 
 class SearchViewModel: ObservableObject {
     
     
     @Published var products: [Product] = []
-    private var historyStack: [[Product]] = []
+    //@Published var historyStack: [[Product]] = []
+    @Published private var historyStack: [(products: [Product], query: String)] = []
+    
     @Published var query: String = ""
     @Published var isLoading: Bool = false
     @Published var hasMorePages: Bool = true
     @Published var searchID = UUID()
     @Published var searchType: String = "search"
+    @Published var lastQuery: String = ""
     
     //private var cancellables = Set<AnyCancellable>()
     private var currentPage = 1
@@ -19,8 +22,9 @@ class SearchViewModel: ObservableObject {
     func search(reset: Bool = true) {
         // Save current state
         if !products.isEmpty {
-            historyStack.append(products)
+            historyStack.append((products: products, query: lastQuery))
         }
+        lastQuery = query
         guard !isFetching else { return }
 
         //if reset {
@@ -53,8 +57,9 @@ class SearchViewModel: ObservableObject {
     }
     func searchRelated(to productID: String) {
         if !products.isEmpty {
-            historyStack.append(products)
+            historyStack.append((products: products, query: lastQuery))
         }
+        lastQuery = query
         self.products = []
         self.isLoading = true
         self.hasMorePages = false
@@ -77,13 +82,17 @@ class SearchViewModel: ObservableObject {
                 }
 
                 self.products = newProducts
+                print (url)
             }
         }.resume()
     }
     
     func goBack() {
         if let previous = historyStack.popLast() {
-            self.products = previous
+            withAnimation {
+                self.products = previous.products
+                self.query = previous.query
+            }
         }
     }
 

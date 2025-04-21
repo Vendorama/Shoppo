@@ -5,10 +5,9 @@ import SDWebImageSwiftUI
 struct ContentView: View {
     @StateObject private var viewModel = SearchViewModel()
     //let columns = [GridItem(.flexible()), GridItem(.flexible())]
-    @FocusState var textFieldIsFocused: Bool
+    @FocusState private var textFieldIsFocused: Bool
     @State private var imageLoaded = false
-    
-    
+    @State private var inputQuery: String = ""
     
     var body: some View {
         NavigationView {
@@ -18,21 +17,36 @@ struct ContentView: View {
                 let columnCount = max(Int(screenWidth / desiredItemWidth), 1)
                 let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: columnCount)
                 
+                ZStack {
                     VStack {
                         
-                        // Logo at top
-                        WebImage(url: URL(string: "https://www.shoppo.co.nz/img/shoppo.gif")) { image in
-                            image.resizable()
-                        } placeholder: {
-                            ProgressView()
-                        }
-                        .frame(width: 119, height: 30)
-                        //.padding(.top)
-                        .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                        /*
                         
+                        Link(destination: URL(string: "https://www.shoppo.co.nz")!) {
+                            Image("shoppo")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 30)
+                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                        }
+                        */
+                        Button(action: {
+                            // e.g. reset search, go to homepage products
+                            //viewModel.query = ""
+                            //viewModel.search(reset: true)
+                            textFieldIsFocused = true
+                        }) {
+                            Image("shoppo")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 30)
+                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                        }
                         
                         HStack {
-                            TextField("Shop for...", text: $viewModel.query, onCommit: {
+                            TextField("Shop for...", text: $inputQuery, onCommit: {
+                                viewModel.query = inputQuery
+                                textFieldIsFocused = false
                                 viewModel.search()
                             })
                             //.textFieldStyle(RoundedBorderTextFieldStyle())
@@ -40,7 +54,7 @@ struct ContentView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: UIScreen.main.bounds.width - 70)
                             .offset(x: 13.0, y: 0.0)
-                            
+                            .focused($textFieldIsFocused)
                             
                             .padding(4)
                             .overlay(
@@ -51,9 +65,7 @@ struct ContentView: View {
                             )
                             
                             .onSubmit {
-                                textFieldIsFocused = false
                             }
-                            
                             
                             Button(action: {
                                 viewModel.search()
@@ -64,19 +76,8 @@ struct ContentView: View {
                                     .foregroundColor(.lightGray)
                             }
                         }
-                        
-                        
+                            
                         ScrollView {
-                            if viewModel.canGoBack {
-                                Button("< Back ") {
-                                    viewModel.goBack()
-                                }
-                                .padding(2)
-                                .foregroundColor(.gray)
-                                .font(.system(size: 10))
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .offset(x: 20.0, y: 1.0)
-                            }
                             
                             if viewModel.query == "" && viewModel.searchType == "search" {
                                 Text("New Arrivals")
@@ -87,12 +88,26 @@ struct ContentView: View {
                                     .offset(x: 20.0, y: 1.0)
                                     .bold()
                             }
+                            
+                            else if viewModel.canGoBack {
+                                Button("< Back ") {
+                                    viewModel.goBack()
+                                }
+                                .padding(2)
+                                .foregroundColor(.gray)
+                                .font(.system(size: 10))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .offset(x: 20.0, y: 1.0)
+                            }
                             LazyVGrid(columns: columns, spacing: 1) {
-                                ForEach(viewModel.products) { product in
-                                    ProductRowView(product: product, viewModel: viewModel)
-                                        .onAppear {
-                                            // viewModel.loadNextPageIfNeeded(currentItem: product)
-                                        }
+                                
+                                
+                                ForEach(Array(viewModel.products.enumerated()), id: \.element.id) { index, product in
+                                    if index == 0 && viewModel.searchType == "related" {
+                                        ProductRowViewRelated(product: product, viewModel: viewModel)
+                                    } else {
+                                        ProductRowView(product: product, viewModel: viewModel)
+                                    }
                                 }
                                 
                                 if viewModel.isLoading {
@@ -104,6 +119,9 @@ struct ContentView: View {
                         .padding(5)
                         
                     }
+                    .onChange(of: viewModel.products) {
+                        textFieldIsFocused = false
+                    }
                     .onAppear {
                         // Trigger initial search with empty query
                         if viewModel.products.isEmpty {
@@ -111,6 +129,14 @@ struct ContentView: View {
                         }
                     }
                     //.navigationTitle("Shoppo Search")
+                }
+                }
+                .contentShape(Rectangle()) // Make the whole ZStack tappable
+                .onTapGesture {
+                    textFieldIsFocused = false
+                }
+                .onChange(of: viewModel.query) { oldValue, newValue in
+                    inputQuery = newValue
                 }
             }
         }
