@@ -6,7 +6,7 @@ class SearchViewModel: ObservableObject {
     
     @Published var products: [Product] = []
     //@Published var historyStack: [[Product]] = []
-    @Published private var historyStack: [(products: [Product], query: String)] = []
+    @Published private var historyStack: [(products: [Product], query: String, searchType: String)] = []
     
     @Published var query: String = ""
     @Published var isLoading: Bool = false
@@ -14,17 +14,20 @@ class SearchViewModel: ObservableObject {
     @Published var searchID = UUID()
     @Published var searchType: String = "search"
     @Published var lastQuery: String = ""
+    @Published var lastSearchType: String = "search"
     
     //private var cancellables = Set<AnyCancellable>()
     private var currentPage = 1
     private var isFetching = false
     
+   // func search(reset: Bool = true, thisType: String = "search") {
     func search(reset: Bool = true) {
         // Save current state
         if !products.isEmpty {
-            historyStack.append((products: products, query: lastQuery))
+            historyStack.append((products: products, query: lastQuery, searchType: lastSearchType))
         }
         lastQuery = query
+        lastSearchType = searchType
         guard !isFetching else { return }
 
         //if reset {
@@ -33,6 +36,7 @@ class SearchViewModel: ObservableObject {
             hasMorePages = true
             searchID = UUID() // triggers scroll-to-top
             searchType = "search"
+        
         //}
         
         guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
@@ -57,9 +61,10 @@ class SearchViewModel: ObservableObject {
     }
     func searchRelated(to productID: String) {
         if !products.isEmpty {
-            historyStack.append((products: products, query: lastQuery))
+            historyStack.append((products: products, query: lastQuery, searchType: searchType))
         }
         lastQuery = query
+        lastSearchType = searchType
         self.products = []
         self.isLoading = true
         self.hasMorePages = false
@@ -82,7 +87,37 @@ class SearchViewModel: ObservableObject {
                 }
 
                 self.products = newProducts
-                print (url)
+            }
+        }.resume()
+    }
+    func searchVendor(to vendorID: String) {
+        if !products.isEmpty {
+            historyStack.append((products: products, query: lastQuery, searchType: searchType))
+        }
+        lastQuery = query
+        lastSearchType = searchType
+        self.products = []
+        self.isLoading = true
+        self.hasMorePages = false
+        self.currentPage = 1
+        searchType = "vendor"
+
+        let urlString = "https://www.shoppo.co.nz/app/?vu=\(vendorID)"
+        guard let url = URL(string: urlString) else {
+            isLoading = false
+            return
+        }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            DispatchQueue.main.async {
+                self.isLoading = false
+
+                guard let data = data,
+                      let newProducts = try? JSONDecoder().decode([Product].self, from: data) else {
+                    return
+                }
+
+                self.products = newProducts
             }
         }.resume()
     }
@@ -92,6 +127,7 @@ class SearchViewModel: ObservableObject {
             withAnimation {
                 self.products = previous.products
                 self.query = previous.query
+                self.searchType = previous.searchType
             }
         }
     }

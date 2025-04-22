@@ -4,10 +4,10 @@ import SDWebImageSwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = SearchViewModel()
-    //let columns = [GridItem(.flexible()), GridItem(.flexible())]
     @FocusState private var textFieldIsFocused: Bool
     @State private var imageLoaded = false
     @State private var inputQuery: String = ""
+    @Environment(\.dismissSearch) private var dismissSearch
     
     var body: some View {
         NavigationView {
@@ -17,128 +17,97 @@ struct ContentView: View {
                 let columnCount = max(Int(screenWidth / desiredItemWidth), 1)
                 let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: columnCount)
                 
-                ZStack {
-                    VStack {
-                        
-                        /*
-                        
-                        Link(destination: URL(string: "https://www.shoppo.co.nz")!) {
-                            Image("shoppo")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 30)
-                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                ScrollView {
+                    
+                    if viewModel.canGoBack {
+                        Button("< Back ") {
+                            viewModel.goBack()
+                            textFieldIsFocused = false
                         }
-                        */
-                        Button(action: {
-                            // e.g. reset search, go to homepage products
-                            //viewModel.query = ""
-                            //viewModel.search(reset: true)
-                            textFieldIsFocused = true
-                        }) {
-                            Image("shoppo")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 30)
-                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                        }
+                        .padding(2)
+                        .foregroundColor(.gray)
+                        .font(.system(size: 10))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .offset(x: 20.0, y: 1.0)
+                    } else if viewModel.searchType == "search" {
                         
-                        HStack {
-                            TextField("Shop for...", text: $inputQuery, onCommit: {
-                                viewModel.query = inputQuery
-                                textFieldIsFocused = false
-                                viewModel.search()
-                            })
-                            //.textFieldStyle(RoundedBorderTextFieldStyle())
-                            //.padding(EdgeInsets(top: 1, leading: 0, bottom: 3, trailing: 0))
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: UIScreen.main.bounds.width - 70)
-                            .offset(x: 13.0, y: 0.0)
-                            .focused($textFieldIsFocused)
-                            
-                            .padding(4)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 25)
-                                    .stroke(Color.lightGray)
-                                    .offset(x: 13.0, y: 0.0)
-                                    .frame(width: UIScreen.main.bounds.width - 40)
-                            )
-                            
-                            .onSubmit {
+                        Text("New Arrivals")
+                            .padding(2)
+                            .foregroundColor(.gray)
+                            .font(.system(size: 12))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .offset(x: 20.0, y: 1.0)
+                            .bold()
+                    }
+                    
+                    
+                    LazyVGrid(columns: columns, spacing: 1) {
+                        
+                        
+                        ForEach(Array(viewModel.products.enumerated()), id: \.element.id) { index, product in
+                            if index == 0 && viewModel.searchType == "related" {
+                                ProductRowViewRelated(product: product, viewModel: viewModel)
+                            } else if index == 0 && viewModel.searchType == "vendor" {
+                                ProductRowViewVendor(product: product, viewModel: viewModel)
+                            } else {
+                                ProductRowView(product: product, viewModel: viewModel)
                             }
-                            
+                        }
+                        
+                        if viewModel.isLoading {
+                            ProgressView()
+                                .padding()
+                        }
+                    }
+                }
+                .padding(EdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7))
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        if !textFieldIsFocused {
                             Button(action: {
-                                viewModel.search()
+                                textFieldIsFocused = true
                             }) {
-                                Image(systemName: "magnifyingglass")
-                                    .padding(EdgeInsets(top: 1, leading: 0, bottom: 5, trailing: 0))
-                                    .offset(x: -17.0, y: 1.0)
-                                    .foregroundColor(.lightGray)
+                                Image("shoppo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 30)
+                                    .padding(.bottom, 5)
                             }
                         }
-                            
-                        ScrollView {
-                            
-                            if viewModel.query == "" && viewModel.searchType == "search" {
-                                Text("New Arrivals")
-                                    .padding(2)
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: 12))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .offset(x: 20.0, y: 1.0)
-                                    .bold()
-                            }
-                            
-                            else if viewModel.canGoBack {
-                                Button("< Back ") {
-                                    viewModel.goBack()
-                                }
-                                .padding(2)
-                                .foregroundColor(.gray)
-                                .font(.system(size: 10))
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .offset(x: 20.0, y: 1.0)
-                            }
-                            LazyVGrid(columns: columns, spacing: 1) {
-                                
-                                
-                                ForEach(Array(viewModel.products.enumerated()), id: \.element.id) { index, product in
-                                    if index == 0 && viewModel.searchType == "related" {
-                                        ProductRowViewRelated(product: product, viewModel: viewModel)
-                                    } else {
-                                        ProductRowView(product: product, viewModel: viewModel)
-                                    }
-                                }
-                                
-                                if viewModel.isLoading {
-                                    ProgressView()
-                                        .padding()
-                                }
-                            }
-                        }
-                        .padding(5)
-                        
                     }
-                    .onChange(of: viewModel.products) {
-                        textFieldIsFocused = false
-                    }
-                    .onAppear {
-                        // Trigger initial search with empty query
-                        if viewModel.products.isEmpty {
-                            viewModel.search()
-                        }
-                    }
-                    //.navigationTitle("Shoppo Search")
                 }
+                .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always))
+                .onSubmit(of: .search) {
+                    viewModel.query = inputQuery
+                    textFieldIsFocused = false
+                    //viewModel.search(reset: true, thisType: "search")
+                    viewModel.search()
                 }
-                .contentShape(Rectangle()) // Make the whole ZStack tappable
-                .onTapGesture {
+                .onChange(of: viewModel.products) {
                     textFieldIsFocused = false
                 }
-                .onChange(of: viewModel.query) { oldValue, newValue in
-                    inputQuery = newValue
+                .onAppear {
+                    // Trigger initial search with empty query
+                    if viewModel.products.isEmpty {
+                        //viewModel.search(reset: true, thisType: "search")
+                        viewModel.search()
+                    }
                 }
+                
+                
+                
+                
+                
+            }
+            .contentShape(Rectangle()) // Make the whole ZStack tappable
+            .onTapGesture {
+                textFieldIsFocused = false
+            }
+            .onChange(of: viewModel.query) { oldValue, newValue in
+                inputQuery = newValue
             }
         }
     }
+}
 

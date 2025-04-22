@@ -10,6 +10,7 @@ struct Product: Identifiable, Equatable, Decodable {
     let url: String
     let product_id: String
     let vendor_id: String
+    let vendor_name: String
 
     enum CodingKeys: String, CodingKey {
         case name
@@ -19,6 +20,7 @@ struct Product: Identifiable, Equatable, Decodable {
         case url = "url"
         case product_id = "product_id"
         case vendor_id = "vendor_id"
+        case vendor_name = "vendor_name"
     }
 }
 

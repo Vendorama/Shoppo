@@ -5,6 +5,7 @@ struct ProductRowView: View {
     let product: Product
     @ObservedObject var viewModel: SearchViewModel
     @State private var imageLoaded = false
+    @Environment(\.dismissSearch) private var dismissSearch
 
     var body: some View {
         
@@ -60,9 +61,10 @@ struct ProductRowView: View {
             
             
             Button("+ more like this") {
+                dismissSearch()
                 viewModel.searchRelated(to: product.id)
             }
-            .font(.system(size: 11))
+            .font(.system(size: 12))
             .foregroundColor(.gray)
             .frame(maxWidth: .infinity)
             .padding(1)
@@ -80,7 +82,7 @@ struct PriceView: View {
         HStack(spacing: 5) {
             Text(sale_price)
                 .foregroundColor(.red)
-                .strikethrough() // Optional: shows original price as crossed out
+                .strikethrough()
             Text(price)
                 .foregroundColor(.black)
                 .bold()
@@ -95,6 +97,7 @@ struct ProductRowViewRelated: View {
     let product: Product
     @ObservedObject var viewModel: SearchViewModel
     @State private var imageLoaded = false
+    @Environment(\.dismissSearch) private var dismissSearch
 
     var body: some View {
         
@@ -119,11 +122,7 @@ struct ProductRowViewRelated: View {
                         .frame(width: 120, height: 120)
                         .clipped()
                         .background(Color(.systemBackground))
-                        //.border(Color.white, width: 10) // White border with width 10
-                        //.cornerRadius(80.0)
                         .clipShape(Circle())
-                        //.padding(10)
-                        //.offset(x: -10.0, y: -10.0)
                         .cornerRadius(80.0)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 80.0)
@@ -134,16 +133,101 @@ struct ProductRowViewRelated: View {
             }
             .frame(maxWidth: .infinity, alignment: .center)
         
-        Text("showing more like this")
+            Text("showing more like this")
         
-                .font(.system(size: 11))
+                .font(.system(size: 12))
                 .foregroundColor(.gray)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 12)
-                .padding(.bottom, 42)
+                .padding(.bottom, 2)
                 .frame(maxWidth: .infinity, alignment: .center)
             
+            Button("+ more from this store") {
+                dismissSearch()
+                viewModel.searchVendor(to: product.id)
+            }
+            .font(.system(size: 12))
+            .foregroundColor(.gray)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 2)
+            .padding(.bottom, 6)
         }
     }
 }
 
+struct ProductRowViewVendor: View {
+    let product: Product
+    @ObservedObject var viewModel: SearchViewModel
+    @State private var imageLoaded = false
+    @Environment(\.dismissSearch) private var dismissSearch
+
+    var body: some View {
+        
+        VStack(alignment: .leading) {
+            
+            Button(action: {
+                guard let thisURL = URL(string: product.url),
+                      UIApplication.shared.canOpenURL(thisURL) else {
+                    return
+                }
+                UIApplication.shared.open(thisURL, options: [:], completionHandler: nil)
+            }) {
+                if let imageURL = URL(string: product.image) {
+                    WebImage(url: imageURL)
+                        .onSuccess { _, _, _ in
+                            DispatchQueue.main.async {
+                                imageLoaded = true
+                            }
+                        }
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)
+                        .clipped()
+                        .background(Color(.systemBackground))
+                        .clipShape(Circle())
+                        .cornerRadius(80.0)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 80.0)
+                                    .stroke(Color.white, lineWidth: 10)
+                            )
+                            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+        
+            Text(.init("showing more from \n**\(product.vendor_name)**"))
+        
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 12)
+                .padding(.bottom, 52)
+                .frame(maxWidth: .infinity, alignment: .center)
+            
+            
+        }
+    }
+}
+/*
+ struct BackButton: View {
+ @ObservedObject var viewModel: SearchViewModel
+ @Environment(\.dismissSearch) private var dismissSearch
+ 
+ var body: some View {
+ 
+ HStack {
+ 
+ Button("< Back ") {
+ dismissSearch()
+ viewModel.goBack()
+ }
+ .padding(2)
+ .foregroundColor(.gray)
+ .font(.system(size: 10))
+ .frame(maxWidth: .infinity, alignment: .leading)
+ .offset(x: 20.0, y: 1.0)
+ 
+ }
+ }
+ }
+ */
