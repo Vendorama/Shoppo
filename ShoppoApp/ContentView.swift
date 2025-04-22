@@ -13,9 +13,9 @@ struct ContentView: View {
         NavigationView {
             GeometryReader { geometry in
                 let screenWidth = geometry.size.width
-                let desiredItemWidth: CGFloat = 160 // you can tweak this
+                let desiredItemWidth: CGFloat = 180 // you can tweak this
                 let columnCount = max(Int(screenWidth / desiredItemWidth), 1)
-                let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: columnCount)
+                let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: columnCount)
                 
                 ScrollView {
                     
@@ -23,12 +23,13 @@ struct ContentView: View {
                         Button("< Back ") {
                             viewModel.goBack()
                             textFieldIsFocused = false
+                            dismissSearch()
                         }
                         .padding(2)
                         .foregroundColor(.gray)
                         .font(.system(size: 10))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .offset(x: 20.0, y: 1.0)
+                        .offset(x: 14.0, y: 0.0)
                     } else if viewModel.searchType == "search" {
                         
                         Text("New Arrivals")
@@ -36,13 +37,11 @@ struct ContentView: View {
                             .foregroundColor(.gray)
                             .font(.system(size: 12))
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .offset(x: 20.0, y: 1.0)
+                            .offset(x: 14.0, y: 0.0)
                             .bold()
                     }
                     
-                    
                     LazyVGrid(columns: columns, spacing: 1) {
-                        
                         
                         ForEach(Array(viewModel.products.enumerated()), id: \.element.id) { index, product in
                             if index == 0 && viewModel.searchType == "related" {
@@ -71,8 +70,7 @@ struct ContentView: View {
                                 Image("shoppo")
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(height: 30)
-                                    .padding(.bottom, 5)
+                                    .frame(height: 28)
                             }
                         }
                     }
@@ -81,23 +79,19 @@ struct ContentView: View {
                 .onSubmit(of: .search) {
                     viewModel.query = inputQuery
                     textFieldIsFocused = false
-                    //viewModel.search(reset: true, thisType: "search")
-                    viewModel.search()
+                    viewModel.search(reset: true, thisType: "search")
+                    //viewModel.search()
                 }
                 .onChange(of: viewModel.products) {
                     textFieldIsFocused = false
                 }
                 .onAppear {
-                    // Trigger initial search with empty query
                     if viewModel.products.isEmpty {
-                        //viewModel.search(reset: true, thisType: "search")
-                        viewModel.search()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            viewModel.search(reset: true, thisType: "search")
+                        }
                     }
                 }
-                
-                
-                
-                
                 
             }
             .contentShape(Rectangle()) // Make the whole ZStack tappable

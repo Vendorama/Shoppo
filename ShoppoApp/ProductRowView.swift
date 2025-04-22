@@ -27,22 +27,28 @@ struct ProductRowView: View {
                         }
                     
                         //.placeholder(ProgressView().frame(width: 125, height: 145))
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 180, height: 180)
-                        .clipped()
-                        .opacity(imageLoaded ? 1 : 0)
+                        //.resizable()
+                       // .scaledToFit()
+                        //.clipped()
+                        //.opacity(imageLoaded ? 1 : 0)
                         //.animation(.easeIn(duration: 0.3), value: imageLoaded)
                     
-                        .animation(.easeIn(duration: 0.3), value: imageLoaded)
-                            .overlay(
-                                Group {
-                                    if !imageLoaded {
-                                        ProgressView()
-                                            //.frame(width: 180, height: 180)
-                                    }
+                        .resizable()
+                        //.indicator(.none)
+                        .scaledToFit()
+                        //.frame(width: 180, height: 180)
+                        .opacity(imageLoaded ? 1.0 : 0.0)
+                        .animation(.easeIn(duration: 0.2), value: imageLoaded)
+                        
+                        .overlay(
+                            Group {
+                                if !imageLoaded {
+                                    ProgressView()
+                                        .frame(width: 180, height: 180)
                                 }
-                            )
+                            }
+                        )
+
                 }
             }
 
@@ -60,6 +66,7 @@ struct ProductRowView: View {
                 .background(Color(.systemBackground))
             
             
+            
             Button("+ more like this") {
                 dismissSearch()
                 viewModel.searchRelated(to: product.id)
@@ -70,7 +77,8 @@ struct ProductRowView: View {
             .padding(1)
         }
         .background(Color(.systemBackground))
-        .padding(.vertical)
+        .padding(.top, 4)
+        .padding(.bottom, 10)
     }
 }
 
@@ -79,7 +87,7 @@ struct PriceView: View {
     var sale_price: String
 
     var body: some View {
-        HStack(spacing: 5) {
+        HStack {
             Text(sale_price)
                 .foregroundColor(.red)
                 .strikethrough()
@@ -89,6 +97,7 @@ struct PriceView: View {
         }
         .frame(maxWidth: .infinity)
         .font(.system(size: 16))
+        
     }
 }
 
@@ -131,6 +140,7 @@ struct ProductRowViewRelated: View {
                             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                 }
             }
+            .offset(y:-10)
             .frame(maxWidth: .infinity, alignment: .center)
         
             Text("showing more like this")
@@ -138,19 +148,20 @@ struct ProductRowViewRelated: View {
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
                 .frame(maxWidth: .infinity)
-                .padding(.top, 12)
-                .padding(.bottom, 2)
+                .padding(.top, 6)
+                .padding(.bottom, 0)
+                .italic()
                 .frame(maxWidth: .infinity, alignment: .center)
             
-            Button("+ more from this store") {
+            Button("+ show more from \n\(product.vendor_name)") {
                 dismissSearch()
-                viewModel.searchVendor(to: product.id)
+                viewModel.searchVendor(to: product.vendor_id)
             }
             .font(.system(size: 12))
             .foregroundColor(.gray)
             .frame(maxWidth: .infinity)
             .padding(.top, 2)
-            .padding(.bottom, 6)
+            .padding(.bottom, 2)
         }
     }
 }
@@ -180,7 +191,7 @@ struct ProductRowViewVendor: View {
                             }
                         }
                         .resizable()
-                        .scaledToFit()
+                        //.scaledToFit()
                         .frame(width: 120, height: 120)
                         .clipped()
                         .background(Color(.systemBackground))
@@ -193,15 +204,16 @@ struct ProductRowViewVendor: View {
                             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                 }
             }
+            .offset(y:-10)
             .frame(maxWidth: .infinity, alignment: .center)
         
-            Text(.init("showing more from \n**\(product.vendor_name)**"))
+            Text(.init("*showing more from* \n**\(product.vendor_name)**"))
         
                 .font(.system(size: 12))
                 .foregroundColor(.gray)
                 .frame(maxWidth: .infinity)
-                .padding(.top, 12)
-                .padding(.bottom, 52)
+                .padding(.top, 6)
+                .padding(.bottom, 22)
                 .frame(maxWidth: .infinity, alignment: .center)
             
             

@@ -3,7 +3,6 @@ import Foundation
 
 class SearchViewModel: ObservableObject {
     
-    
     @Published var products: [Product] = []
     //@Published var historyStack: [[Product]] = []
     @Published private var historyStack: [(products: [Product], query: String, searchType: String)] = []
@@ -20,8 +19,7 @@ class SearchViewModel: ObservableObject {
     private var currentPage = 1
     private var isFetching = false
     
-   // func search(reset: Bool = true, thisType: String = "search") {
-    func search(reset: Bool = true) {
+    func search(reset: Bool = true, thisType: String = "search") {
         // Save current state
         if !products.isEmpty {
             historyStack.append((products: products, query: lastQuery, searchType: lastSearchType))
@@ -35,12 +33,13 @@ class SearchViewModel: ObservableObject {
             currentPage = 1
             hasMorePages = true
             searchID = UUID() // triggers scroll-to-top
-            searchType = "search"
+            searchType = thisType
         
         //}
         
         guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: "https://www.shoppo.co.nz/app/?vq=\(encodedQuery)") else {
+              print("Error fetching URL")
             return
         }
         
@@ -50,9 +49,9 @@ class SearchViewModel: ObservableObject {
                 return
             }
             do {
-                let decoded = try JSONDecoder().decode([Product].self, from: data)
+                let newProducts = try JSONDecoder().decode([Product].self, from: data)
                 DispatchQueue.main.async {
-                    self.products = decoded
+                    self.products = newProducts
                 }
             } catch {
                 print("Error decoding: \(error)")
@@ -83,7 +82,8 @@ class SearchViewModel: ObservableObject {
 
                 guard let data = data,
                       let newProducts = try? JSONDecoder().decode([Product].self, from: data) else {
-                    return
+                    print("Error fetching vs")
+                   return
                 }
 
                 self.products = newProducts
@@ -114,7 +114,8 @@ class SearchViewModel: ObservableObject {
 
                 guard let data = data,
                       let newProducts = try? JSONDecoder().decode([Product].self, from: data) else {
-                    return
+                    print("Error fetching vu")
+                   return
                 }
 
                 self.products = newProducts
