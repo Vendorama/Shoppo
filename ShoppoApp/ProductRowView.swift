@@ -128,7 +128,7 @@ struct ProductRowViewRelated: View {
                         }
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 120, height: 120)
+                        .frame(width: 140, height: 140)
                         .clipped()
                         .background(Color(.systemBackground))
                         .clipShape(Circle())
@@ -192,7 +192,7 @@ struct ProductRowViewVendor: View {
                         }
                         .resizable()
                         //.scaledToFit()
-                        .frame(width: 120, height: 120)
+                        .frame(width: 140, height: 140)
                         .clipped()
                         .background(Color(.systemBackground))
                         .clipShape(Circle())

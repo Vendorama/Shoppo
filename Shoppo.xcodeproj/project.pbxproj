@@ -28,9 +28,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		14DBC6AC2DB21BA30085D275 /* ShoppoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		14DBC6BC2DB21BA40085D275 /* ShoppoAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		14DBC6C62DB21BA40085D275 /* ShoppoAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		14DBC6AC2DB21BA30085D275 /* Shoppo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shoppo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		14DBC6BC2DB21BA40085D275 /* ShoppoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		14DBC6C62DB21BA40085D275 /* ShoppoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -90,9 +90,9 @@
 		14DBC6AD2DB21BA30085D275 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				14DBC6AC2DB21BA30085D275 /* ShoppoApp.app */,
-				14DBC6BC2DB21BA40085D275 /* ShoppoAppTests.xctest */,
-				14DBC6C62DB21BA40085D275 /* ShoppoAppUITests.xctest */,
+				14DBC6AC2DB21BA30085D275 /* Shoppo.app */,
+				14DBC6BC2DB21BA40085D275 /* ShoppoTests.xctest */,
+				14DBC6C62DB21BA40085D275 /* ShoppoUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,9 +100,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		14DBC6AB2DB21BA30085D275 /* ShoppoApp */ = {
+		14DBC6AB2DB21BA30085D275 /* Shoppo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 14DBC6D02DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoApp" */;
+			buildConfigurationList = 14DBC6D02DB21BA40085D275 /* Build configuration list for PBXNativeTarget "Shoppo" */;
 			buildPhases = (
 				14DBC6A82DB21BA30085D275 /* Sources */,
 				14DBC6A92DB21BA30085D275 /* Frameworks */,
@@ -115,17 +115,17 @@
 			fileSystemSynchronizedGroups = (
 				14DBC6AE2DB21BA30085D275 /* ShoppoApp */,
 			);
-			name = ShoppoApp;
+			name = Shoppo;
 			packageProductDependencies = (
 				14DC476B2DB44C5900D33C86 /* SDWebImageSwiftUI */,
 			);
 			productName = ShoppoApp;
-			productReference = 14DBC6AC2DB21BA30085D275 /* ShoppoApp.app */;
+			productReference = 14DBC6AC2DB21BA30085D275 /* Shoppo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		14DBC6BB2DB21BA40085D275 /* ShoppoAppTests */ = {
+		14DBC6BB2DB21BA40085D275 /* ShoppoTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 14DBC6D32DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoAppTests" */;
+			buildConfigurationList = 14DBC6D32DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoTests" */;
 			buildPhases = (
 				14DBC6B82DB21BA40085D275 /* Sources */,
 				14DBC6B92DB21BA40085D275 /* Frameworks */,
@@ -139,16 +139,16 @@
 			fileSystemSynchronizedGroups = (
 				14DBC6BF2DB21BA40085D275 /* ShoppoAppTests */,
 			);
-			name = ShoppoAppTests;
+			name = ShoppoTests;
 			packageProductDependencies = (
 			);
 			productName = ShoppoAppTests;
-			productReference = 14DBC6BC2DB21BA40085D275 /* ShoppoAppTests.xctest */;
+			productReference = 14DBC6BC2DB21BA40085D275 /* ShoppoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		14DBC6C52DB21BA40085D275 /* ShoppoAppUITests */ = {
+		14DBC6C52DB21BA40085D275 /* ShoppoUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 14DBC6D62DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoAppUITests" */;
+			buildConfigurationList = 14DBC6D62DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoUITests" */;
 			buildPhases = (
 				14DBC6C22DB21BA40085D275 /* Sources */,
 				14DBC6C32DB21BA40085D275 /* Frameworks */,
@@ -162,11 +162,11 @@
 			fileSystemSynchronizedGroups = (
 				14DBC6C92DB21BA40085D275 /* ShoppoAppUITests */,
 			);
-			name = ShoppoAppUITests;
+			name = ShoppoUITests;
 			packageProductDependencies = (
 			);
 			productName = ShoppoAppUITests;
-			productReference = 14DBC6C62DB21BA40085D275 /* ShoppoAppUITests.xctest */;
+			productReference = 14DBC6C62DB21BA40085D275 /* ShoppoUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -192,7 +192,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 14DBC6A72DB21BA30085D275 /* Build configuration list for PBXProject "ShoppoApp" */;
+			buildConfigurationList = 14DBC6A72DB21BA30085D275 /* Build configuration list for PBXProject "Shoppo" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -209,9 +209,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				14DBC6AB2DB21BA30085D275 /* ShoppoApp */,
-				14DBC6BB2DB21BA40085D275 /* ShoppoAppTests */,
-				14DBC6C52DB21BA40085D275 /* ShoppoAppUITests */,
+				14DBC6AB2DB21BA30085D275 /* Shoppo */,
+				14DBC6BB2DB21BA40085D275 /* ShoppoTests */,
+				14DBC6C52DB21BA40085D275 /* ShoppoUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -267,12 +267,12 @@
 /* Begin PBXTargetDependency section */
 		14DBC6BE2DB21BA40085D275 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 14DBC6AB2DB21BA30085D275 /* ShoppoApp */;
+			target = 14DBC6AB2DB21BA30085D275 /* Shoppo */;
 			targetProxy = 14DBC6BD2DB21BA40085D275 /* PBXContainerItemProxy */;
 		};
 		14DBC6C82DB21BA40085D275 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 14DBC6AB2DB21BA30085D275 /* ShoppoApp */;
+			target = 14DBC6AB2DB21BA30085D275 /* Shoppo */;
 			targetProxy = 14DBC6C72DB21BA40085D275 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -469,7 +469,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShoppoApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShoppoApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Shoppo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Shoppo";
 			};
 			name = Debug;
 		};
@@ -487,7 +487,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShoppoApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShoppoApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Shoppo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Shoppo";
 			};
 			name = Release;
 		};
@@ -526,7 +526,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		14DBC6A72DB21BA30085D275 /* Build configuration list for PBXProject "ShoppoApp" */ = {
+		14DBC6A72DB21BA30085D275 /* Build configuration list for PBXProject "Shoppo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				14DBC6CE2DB21BA40085D275 /* Debug */,
@@ -535,7 +535,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		14DBC6D02DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoApp" */ = {
+		14DBC6D02DB21BA40085D275 /* Build configuration list for PBXNativeTarget "Shoppo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				14DBC6D12DB21BA40085D275 /* Debug */,
@@ -544,7 +544,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		14DBC6D32DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoAppTests" */ = {
+		14DBC6D32DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				14DBC6D42DB21BA40085D275 /* Debug */,
@@ -553,7 +553,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		14DBC6D62DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoAppUITests" */ = {
+		14DBC6D62DB21BA40085D275 /* Build configuration list for PBXNativeTarget "ShoppoUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				14DBC6D72DB21BA40085D275 /* Debug */,
