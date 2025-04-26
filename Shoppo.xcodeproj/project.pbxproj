@@ -34,9 +34,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		14DBC6AE2DB21BA30085D275 /* ShoppoApp */ = {
+		14DBC6AE2DB21BA30085D275 /* Shoppo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ShoppoApp;
+			path = Shoppo;
 			sourceTree = "<group>";
 		};
 		14DBC6BF2DB21BA40085D275 /* ShoppoAppTests */ = {
@@ -80,7 +80,7 @@
 		14DBC6A32DB21BA30085D275 = {
 			isa = PBXGroup;
 			children = (
-				14DBC6AE2DB21BA30085D275 /* ShoppoApp */,
+				14DBC6AE2DB21BA30085D275 /* Shoppo */,
 				14DBC6BF2DB21BA40085D275 /* ShoppoAppTests */,
 				14DBC6C92DB21BA40085D275 /* ShoppoAppUITests */,
 				14DBC6AD2DB21BA30085D275 /* Products */,
@@ -113,7 +113,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				14DBC6AE2DB21BA30085D275 /* ShoppoApp */,
+				14DBC6AE2DB21BA30085D275 /* Shoppo */,
 			);
 			name = Shoppo;
 			packageProductDependencies = (
