@@ -1,7 +1,7 @@
 
 import Foundation
 
-struct Product: Identifiable, Equatable, Decodable {
+struct Product: Identifiable, Equatable, Codable {
     var id: String { vendor_id + "." + product_id }
     let name: String
     let price: String
@@ -11,6 +11,7 @@ struct Product: Identifiable, Equatable, Decodable {
     let product_id: String
     let vendor_id: String
     let vendor_name: String
+    let summary: String
 
     enum CodingKeys: String, CodingKey {
         case name
@@ -21,6 +22,7 @@ struct Product: Identifiable, Equatable, Decodable {
         case product_id = "product_id"
         case vendor_id = "vendor_id"
         case vendor_name = "vendor_name"
+        case summary = "summary"
     }
 }
 
