@@ -17,8 +17,8 @@ GET params:
     https://www.shoppo.co.nz/app/?vq=all&page=1
 
 results:
-		'name'=>'Product Name',
-		'price'=>'$1.23',
-		'url'=>'https://www.website.co.nz',
-		'image'=>"https://www.shoppo.co.nz/i/www.website.co.nz/images/products/00001-1_MD.jpg"
+	'name'=>'Product Name',
+	'price'=>'$1.23',
+	'url'=>'https://www.website.co.nz',
+	'image'=>"https://www.shoppo.co.nz/i/www.website.co.nz/images/products/00001-1_MD.jpg"
 
