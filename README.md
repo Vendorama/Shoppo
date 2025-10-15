@@ -1,23 +1,20 @@
-This is a basic Shoppo search, like www.shoppo.co.nz
+This is a iOS Shoppo search app, like www.shoppo.co.nz
 
-It just sends a request to 
+It sends a request to 
 https://www.shoppo.co.nz/app/?vq=all
 
 with the search term being vq.
 
-That's it so far, results are a JSON string with 100 results.
+That's it so far, results are a JSON string with 240 results.
 
 GET params:
 
     vq: the search term
-    
-    from: (pagination), e.g. 100 from the 100th product
-    
-    limit: limit the number of results, default is 100
-    
-    vu: vendor url, e.g. www.tasart.co.nz
+    page: (pagination), e.g. 1 from the 0 to 24th product
+    vu: vendor url, e.g. www.tasart.co.nz (or username: tasart)
+	vs: related/similar, e.g. 12345.12 ('vendor_id'.'product_id')
 
-    https://www.shoppo.co.nz/app/?vq=all&from=0&limit=100
+    https://www.shoppo.co.nz/app/?vq=all&page=1
 
 results:
 		'name'=>'Product Name',
