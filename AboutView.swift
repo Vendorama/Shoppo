@@ -14,7 +14,7 @@ Businesses with an online store can list their products so customers can click t
 
 """)
                 .font(.body)
-                .foregroundColor(.primary)
+                .foregroundStyle(.primary)
                 
 
                 HStack(spacing: 10) {
@@ -54,7 +54,7 @@ Businesses with an online store can list their products so customers can click t
     
     """)
                     .font(.body)
-                    .foregroundColor(.primary)
+                    .foregroundStyle(.primary)
                 
                 
                 HStack(spacing: 12) {
@@ -89,7 +89,7 @@ If you have feedback or suggestions, I’d love to hear from you.
                 Section(header:
                     Text("\nFor our privacy and security policies please visit our website at www.shoppo.co.nz/privacy\n\nFor our terms and conditions please visit our website at www.shoppo.co.nz/terms\n\n")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .textCase(nil)
                 ) {
                     

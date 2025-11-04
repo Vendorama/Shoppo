@@ -8,13 +8,14 @@ struct ProductRowView: View {
     @Environment(\.dismissSearch) private var dismissSearch
     @EnvironmentObject private var favorites: FavoritesStore
 
+    // Callback to trigger navigation from parent
+    var onSelect: () -> Void
+
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 4) {
-            
-            // Navigate to full-view on image tap
-            if let imageURL = URL(string: product.image) {
-                NavigationLink(destination: ProductDetailViewShoppo(product: product, viewModel: viewModel)) {
+            // Image -> navigate on tap
+            if let imageURL = apiURL(product.image) {
+                Button(action: { onSelect() }) {
                     WebImage(url: imageURL)
                         .onSuccess { _, _, _ in
                             DispatchQueue.main.async {
@@ -26,6 +27,8 @@ struct ProductRowView: View {
                         .opacity(imageLoaded ? 1.0 : 0.0)
                         .animation(.easeIn(duration: 0.2), value: imageLoaded)
                         .frame(maxWidth: .infinity, maxHeight: 180)
+                        .cornerRadius(10)
+                        .clipped()
                         .overlay(
                             Group {
                                 if !imageLoaded {
@@ -35,26 +38,30 @@ struct ProductRowView: View {
                             }
                         )
                 }
-                .buttonStyle(.plain) // keeps it looking like an image, no blue highlight
+                .buttonStyle(.plain)
             }
 
-            let link = "[\(product.name)](\(product.url))"
-            
-            // Price row + favorite button aligned on the same line
-            HStack() {
+            // Price row -> navigate on tap
+            Button(action: { onSelect() }) {
                 PriceView(price: product.price, sale_price: product.sale_price)
-                    .font(.body) // keep sizing consistent
+                    .font(.body)
             }
+            .buttonStyle(.plain)
             .frame(maxWidth: .infinity, alignment: .center)
 
-            Text(.init(link))
-                .font(.system(size: 13))
-                .lineLimit(1)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .tint(.primary)
-                .background(Color(.systemBackground))
-            
+            // Name -> navigate on tap
+            Button(action: { onSelect() }) {
+                Text("\(product.name)")
+                    .font(.system(size: 13))
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .tint(.primary)
+                    .background(Color(.systemBackground))
+            }
+            .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, alignment: .center)
+
             if(viewModel.searchType != "vendor") {
                  Button {
                     dismissSearch()
@@ -63,17 +70,18 @@ struct ProductRowView: View {
                      Image("store")
                          .resizable()
                          .scaledToFit()
-                         .foregroundColor(.secondary)
+                         .foregroundStyle(.secondary)
                          .frame(height: 9)
                          .opacity(0.6)
                          .offset(x:3)
                      Text("\(product.vendor_name)")
                  }
                 .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 2)
-                .padding(.bottom, 2)
+                .padding(.bottom, 4)
+                .lineLimit(1)
             }
              
             Button("+ more like this") {
@@ -82,14 +90,12 @@ struct ProductRowView: View {
                 viewModel.searchRelated(to: product)
             }
             .font(.system(size: 12))
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity)
-            
         }
         .background(Color(.systemBackground))
         .padding(.top, 10)
         .padding(.bottom, 10)
-        
         .overlay(
             HStack {
                 Spacer()
@@ -98,7 +104,7 @@ struct ProductRowView: View {
                         favorites.toggleFavorite(product.id)
                     } label: {
                         Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
-                            .foregroundColor(favorites.isFavorite(product.id) ? .purple : .secondary)
+                            .foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
                             .padding(6)
                             .background(favorites.isFavorite(product.id) ? Color(.systemBackground).opacity(1.0) : Color(.systemBackground).opacity(0.5))
                             .clipShape(Circle())
@@ -109,9 +115,8 @@ struct ProductRowView: View {
             }
             .padding(6)
             .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
-            .offset(x:-2, y:10)
+            .offset(x:0, y:10)
         )
-         
     }
 }
 
@@ -123,16 +128,15 @@ struct PriceView: View {
         HStack {
             if(!sale_price.isEmpty) {
                 Text(sale_price)
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
                     .strikethrough()
             }
             Text(price)
-                .foregroundColor(.black)
+                .foregroundStyle(.black)
                 .bold()
         }
     }
 }
-
 
 struct ProductRowViewRelated: View {
     let product: Product
@@ -141,13 +145,14 @@ struct ProductRowViewRelated: View {
     @Environment(\.dismissSearch) private var dismissSearch
     @EnvironmentObject private var favorites: FavoritesStore
 
+    // Callback to trigger navigation from parent
+    var onSelect: () -> Void
+
     var body: some View {
-        
         VStack(alignment: .leading) {
-            
-            // Navigate to full-view on image tap
-            if let imageURL = URL(string: product.image) {
-                NavigationLink(destination: ProductDetailViewShoppo(product: product, viewModel: viewModel)) {
+            // Image -> navigate on tap
+            if let imageURL = apiURL(product.image) {
+                Button(action: { onSelect() }) {
                     WebImage(url: imageURL)
                         .onSuccess { _, _, _ in
                             DispatchQueue.main.async {
@@ -155,17 +160,17 @@ struct ProductRowViewRelated: View {
                             }
                         }
                         .resizable()
-                        .scaledToFit()
-                        .frame(width: 120, height: 120, alignment: .center)
+                        .scaledToFill()
                         .clipped()
+                        .frame(width: 120, height: 120, alignment: .center)
                         .background(Color(.systemBackground))
                         .clipShape(Circle())
                         .cornerRadius(80.0)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 80.0)
-                                    .stroke(Color.white, lineWidth: 10)
-                            )
-                            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 80.0)
+                                .stroke(Color.white, lineWidth: 10)
+                        )
+                        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 4)
                 }
                 .buttonStyle(.plain)
                 .offset(x:30)
@@ -178,7 +183,7 @@ struct ProductRowViewRelated: View {
                     favorites.toggleFavorite(product.id)
                 }) {
                     Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
-                        .foregroundColor(favorites.isFavorite(product.id) ? .purple : .secondary)
+                        .foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
                         .imageScale(.medium)
                         .accessibilityLabel(favorites.isFavorite(product.id) ? "Remove from favourites" : "Add to favourites")
                 }
@@ -188,7 +193,7 @@ struct ProductRowViewRelated: View {
                 
             Text("showing more like this")
                 .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 6)
                 .padding(.bottom, 0)
@@ -207,7 +212,7 @@ struct ProductRowViewRelated: View {
             .padding(.top, 2)
             .padding(.bottom, 2)
             .font(.system(size: 12))
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity)
         }
     }
@@ -222,12 +227,9 @@ struct ProductRowViewVendor: View {
     @EnvironmentObject private var favorites: FavoritesStore
 
     var body: some View {
-        
         VStack(alignment: .leading) {
-            
-            // Navigate to full-view on image tap
-            if let imageURL = URL(string: product.image) {
-                NavigationLink(destination: ProductDetailViewShoppo(product: product, viewModel: viewModel)) {
+            if let imageURL = apiURL(product.image) {
+                Button(action: { showSafari = true }) {
                     WebImage(url: imageURL)
                         .onSuccess { _, _, _ in
                             DispatchQueue.main.async {
@@ -235,17 +237,17 @@ struct ProductRowViewVendor: View {
                             }
                         }
                         .resizable()
-                        .scaledToFit()
-                        .frame(width: 120, height: 120, alignment: .center)
+                        .scaledToFill()
                         .clipped()
+                        .frame(width: 120, height: 120, alignment: .center)
                         .background(Color(.systemBackground))
                         .clipShape(Circle())
                         .cornerRadius(80.0)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 80.0)
-                                    .stroke(Color.white, lineWidth: 10)
-                            )
-                            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 80.0)
+                                .stroke(Color.white, lineWidth: 10)
+                        )
+                        .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 4)
                 }
                 .buttonStyle(.plain)
                 .offset(x:30)
@@ -258,7 +260,7 @@ struct ProductRowViewVendor: View {
                     favorites.toggleFavorite(product.id)
                 }) {
                     Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
-                        .foregroundColor(favorites.isFavorite(product.id) ? .purple : .secondary)
+                        .foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
                         .imageScale(.medium)
                         .accessibilityLabel(favorites.isFavorite(product.id) ? "Remove from favourites" : "Add to favourites")
                 }
@@ -266,16 +268,16 @@ struct ProductRowViewVendor: View {
             }
             .padding(.top, 6)
             
-            let baseURL = (URL(string: product.url)?.host) ?? " "
+            let vendorURL = (URL(string: product.url)?.host) ?? " "
 
             if let thisurl = URL(string: product.url) {
                 Button {
                     showSafari = true
                 } label: {
-                    Text("showing all from \n\(product.vendor_name)\n\(baseURL)")
+                    Text("showing all from \n\(product.vendor_name)\n\(vendorURL)")
                         .font(.system(size: 12))
                         .lineSpacing(2)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 11)
                         .padding(.bottom, 22)
@@ -302,7 +304,9 @@ private extension Product {
             product_id: "prev-001",
             vendor_id: "vendor-xyz",
             vendor_name: "Preview Vendor",
-            summary: "Preview Summary"
+            summary: "Preview Summary",
+            suburb: "Preview Suburb",
+            vc: "Preview VC"
         )
     }
 
@@ -316,7 +320,9 @@ private extension Product {
             product_id: "prev-002",
             vendor_id: "vendor-xyz",
             vendor_name: "Preview Vendor",
-            summary: "Preview Summary"
+            summary: "Preview Summary",
+            suburb: "Preview Suburb",
+            vc: "Preview vc"
         )
     }
 }
@@ -333,28 +339,25 @@ private extension SearchViewModel {
 struct ProductRowView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            // Standard row
             NavigationView {
-                ProductRowView(product: .previewItem, viewModel: .preview(searchType: "search"))
+                ProductRowView(product: .previewItem, viewModel: .preview(searchType: "search"), onSelect: {})
                     .padding()
             }
             .previewDisplayName("Row - Light")
 
             NavigationView {
-                ProductRowView(product: .previewItem, viewModel: .preview(searchType: "search"))
+                ProductRowView(product: .previewItem, viewModel: .preview(searchType: "search"), onSelect: {})
                     .padding()
             }
             .preferredColorScheme(.dark)
             .previewDisplayName("Row - Dark")
 
-            // Related variant (shows circular image and helper text)
             NavigationView {
-                ProductRowViewRelated(product: .previewItem, viewModel: .preview(searchType: "related"))
+                ProductRowViewRelated(product: .previewItem, viewModel: .preview(searchType: "related"), onSelect: {})
                     .padding()
             }
             .previewDisplayName("Related Row")
 
-            // Vendor variant
             NavigationView {
                 ProductRowViewVendor(product: .previewVendorItem, viewModel: .preview(searchType: "vendor"))
                     .padding()

@@ -14,14 +14,16 @@ struct ProductDetailViewShoppo: View {
     @Environment(\.dismissSearch) private var dismissSearch
     @EnvironmentObject private var favorites: FavoritesStore
 
+    // Resolved category title after lazy loading (optional)
+    @State private var resolvedCategoryTitle: String?
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
 
                 // Full-width image, maintaining aspect ratio
-                if let imageURL = URL(string: product.image) {
+                if let imageURL = apiURL(product.image) {
                     ZStack {
-                        // Keep reserved space without showing placeholders/spinners
                         Color(.systemBackground)
                             .frame(maxWidth: .infinity, maxHeight: 300)
 
@@ -49,11 +51,8 @@ struct ProductDetailViewShoppo: View {
 
                     if !product.vendor_name.isEmpty {
                         Button(action: {
-                            // Dismiss container (Favorites sheet) if applicable
                             onRequestDismissContainer?()
-                            // Dismiss detail if needed
                             dismiss()
-                            // Then run the vendor search
                             DispatchQueue.main.async {
                                 dismissSearch()
                                 viewModel.searchVendor(to: product.vendor_id)
@@ -62,28 +61,36 @@ struct ProductDetailViewShoppo: View {
                             Image("store")
                                 .resizable()
                                 .scaledToFit()
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                                 .frame(height: 14)
                                 .opacity(0.5)
                                 .offset(x:1, y:1)
                             Text("\(product.vendor_name)")
                                 .font(.subheadline)
                                 .padding(.top, 2)
+                            
                         }
                         .buttonStyle(.plain)
                         .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
+                        
+                        if product.suburb != "" {
+                            Text(product.suburb)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
                     }
 
                     if !product.summary.isEmpty {
                         Text("\(product.summary)")
                             .font(.system(size: 13))
                             .lineSpacing(4)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity)
                             .padding(.top, 6)
                             .padding(.bottom, 6)
-                            .frame(maxWidth: .infinity)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -106,21 +113,109 @@ struct ProductDetailViewShoppo: View {
                         SafariView(url: url)
                     }
                 }
-
+                
                 Button("+ more like this") {
-                    // Dismiss container (Favorites sheet) if applicable
                     onRequestDismissContainer?()
-                    // Dismiss detail if it’s being presented/pushed
                     dismiss()
-                    // Then trigger the related search
                     DispatchQueue.main.async {
                         dismissSearch()
                         viewModel.searchRelated(to: product)
                     }
                 }
-                .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
+
+                // Category button (lazy loads names if cache is empty)
+                if product.vc != "" {
+                    let fallbackTitle: String = {
+                        guard let id = Int(product.vc) else { return "" }
+                        if let info = viewModel.categoryInfo(for: id) {
+                            if let subID = info.subID, subID > 999 {
+                                print()
+                                let parent = cleanCategoryName(info.parentName) ?? ""
+                                let sub = cleanCategoryName(info.subName) ?? ""
+                                if sub != "" {
+                                    return "\(parent) › \(sub)"
+                                }
+                                return "not found \(parent) › \(sub) \(subID) "
+                            } else {
+                                return cleanCategoryName(info.parentName) ?? ""
+                            }
+                        } else {
+                            return ""
+                        }
+                    }()
+
+                    let titleToShow = resolvedCategoryTitle ?? fallbackTitle
+
+                    Button(titleToShow) {
+                        onRequestDismissContainer?()
+                        dismiss()
+                        DispatchQueue.main.async {
+                            dismissSearch()
+                            
+                            // Strict category-only: clear all previous state/filters first
+                            viewModel.resetFilters()
+                            
+                            // Apply the destination category
+                            if let id = Int(product.vc) {
+                                if id < 999 {
+                                    viewModel.selectedTopCategoryID = id
+                                    viewModel.selectedSubcategoryID = nil
+                                    if let info = viewModel.categoryInfo(for: id) {
+                                        viewModel.selectedTopCategoryName = info.parentName
+                                        viewModel.selectedSubcategoryName = nil
+                                    } else {
+                                        viewModel.selectedTopCategoryName = nil
+                                        viewModel.selectedSubcategoryName = nil
+                                    }
+                                } else {
+                                    guard let vcpid = computeParentCategoryID(from: id) else { return }
+                                    viewModel.selectedTopCategoryID = vcpid
+                                    viewModel.selectedSubcategoryID = id
+                                    if let info = viewModel.categoryInfo(for: id) {
+                                        viewModel.selectedTopCategoryName = info.parentName
+                                        viewModel.selectedSubcategoryName = info.subName
+                                    } else {
+                                        viewModel.selectedTopCategoryName = nil
+                                        viewModel.selectedSubcategoryName = nil
+                                    }
+                                }
+                            }
+                            
+                            // Trigger the search with only vc set
+                            viewModel.refreshFirstPage()
+                        }
+                    }
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+                    .task {
+                        // Lazy-load only what we need for this vc, then resolve title
+                        guard let id = Int(product.vc) else { return }
+                        if id < 999 {
+                            await viewModel.ensureTopCategoriesLoaded()
+                        } else {
+                            guard let parentID = computeParentCategoryID(from: id) else { return }
+                            await viewModel.ensureTopCategoriesLoaded()
+                            await viewModel.ensureSubcategoriesLoaded(parentID: parentID)
+                        }
+                        // After loading, resolve title again from cache
+                        if let info = viewModel.categoryInfo(for: id) {
+                            if let subID = info.subID, subID > 999 {
+                                let parent = cleanCategoryName(info.parentName) ?? ""
+                                let sub = cleanCategoryName(info.subName) ?? ""
+                                if sub != "" {
+                                    resolvedCategoryTitle = "\(parent) › \(sub)"
+                                }
+                            } else {
+                                resolvedCategoryTitle = cleanCategoryName(info.parentName) ?? ""
+                            }
+                        }
+                    }
+                }
+                
             }
             .padding(.top)
 
@@ -132,11 +227,11 @@ struct ProductDetailViewShoppo: View {
                             favorites.toggleFavorite(product.id)
                         } label: {
                             Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
-                                .foregroundColor(favorites.isFavorite(product.id) ? .purple : .secondary)
+                                .foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
                                 .padding(16)
                                 .background(favorites.isFavorite(product.id) ? Color(.systemBackground).opacity(1.0) : Color(.systemBackground).opacity(0.8))
                                 .clipShape(Circle())
-                                .offset(x:-9, y:-9)
+                                .offset(x:-10, y:20)
                         }
                         .buttonStyle(.plain)
                         Spacer()
@@ -152,6 +247,9 @@ struct ProductDetailViewShoppo: View {
             }
         }
         .background(Color(.systemBackground))
+        .task {
+            await APIRequest.sendRequest(endpoint: "stats", id:  product.id)
+        }
     }
 }
 
@@ -167,7 +265,9 @@ struct ProductDetailViewShoppo_Previews: PreviewProvider {
             product_id: "preview-001",
             vendor_id: "vendor-123",
             vendor_name: "Preview Vendor",
-            summary: "Preview Summary"
+            summary: "Preview Summary",
+            suburb: "Preview Suburb",
+            vc: "1000"
         )
     }
 

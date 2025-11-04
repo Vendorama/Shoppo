@@ -70,12 +70,12 @@ struct FavoritesView: View {
         VStack(spacing: 12) {
             Image(systemName: "heart")
                 .font(.system(size: 40))
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
             Text("No favourites yet")
                 .font(.headline)
             Text("Tap the heart on any product to save it here.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground))
@@ -110,7 +110,7 @@ struct FavoritesView: View {
                     ProgressView()
                     Text("Loading favourites…")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(.systemBackground))
@@ -118,12 +118,12 @@ struct FavoritesView: View {
                 VStack(spacing: 12) {
                     Image(systemName: "heart.slash")
                         .font(.system(size: 40))
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     Text("No details found for favourites")
                         .font(.headline)
                     Text("They may be unavailable. You can remove items or try again later.")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
@@ -141,7 +141,7 @@ struct FavoritesView: View {
                                 )
                         ) {
                             HStack(spacing: 12) {
-                                if let url = URL(string: product.image) {
+                                if let url = apiURL(product.image) {
                                     WebImage(url: url)
                                         .resizable()
                                         .scaledToFill()
@@ -155,6 +155,11 @@ struct FavoritesView: View {
                                         .cornerRadius(8)
                                 }
                                 VStack(alignment: .leading, spacing: 4) {
+                                    if product.suburb != "" {
+                                        Text(product.suburb)
+                                            .font(.footnote)
+                                            .lineLimit(1)
+                                    }
                                     Text(product.name)
                                         .font(.subheadline)
                                         .lineLimit(1)
@@ -164,18 +169,22 @@ struct FavoritesView: View {
                                     Text(product.vendor_name)
                                         .font(.subheadline)
                                         .lineLimit(2)
-                                        .foregroundColor(.secondary)
+                                        .foregroundStyle(.secondary)
                                 }
-                                Spacer()
+                                //Spacer()
                                 
                                 Button {
                                     favorites.toggleFavorite(product.id)
                                     removeFromLocal(product.id)
                                 } label: {
-                                    Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
-                                        .foregroundColor(favorites.isFavorite(product.id) ? .purple : .secondary)
+                                    //Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
+                                    //.foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
+                                    Image(systemName: "heart.slash")
+                                        .foregroundStyle(.secondary)
+                                        .font(.system(size: 16))
                                 }
                                 .buttonStyle(.plain)
+                                .offset(x:-10)
                             }
                         }
                     }
@@ -200,17 +209,20 @@ struct FavoritesView: View {
                             )
                     ) {
                         VStack(spacing: 6) {
-                            if let url = URL(string: product.image) {
+                            
+                            if let url = apiURL(product.image) {
                                 WebImage(url: url)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(maxWidth: .infinity, maxHeight: 160)
+                                    .clipped()
+                                    .frame(maxWidth: .infinity, maxHeight: 100)
                                     .background(Color(.systemBackground))
                                     .cornerRadius(8)
+                                    .contentShape(Rectangle())
                             } else {
                                 Rectangle()
                                     .fill(Color(.secondarySystemBackground))
-                                    .frame(height: 160)
+                                    .frame(height: 100)
                                     .cornerRadius(8)
                             }
                             // Grid shows image + price only
@@ -229,10 +241,18 @@ struct FavoritesView: View {
                                         favorites.toggleFavorite(product.id)
                                         removeFromLocal(product.id)
                                     } label: {
-                                        Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
-                                            .foregroundColor(favorites.isFavorite(product.id) ? .purple : .secondary)
+                                        /*
+                                         Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
+                                             .foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
+                                         
+                                         Image(systemName: "trash")
+                                             .foregroundStyle(.secondary)
+                                         */
+                                        Image(systemName: "heart.slash")
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(.secondary)
                                             .padding(6)
-                                            .background(.thinMaterial)
+                                            .background(.thickMaterial)
                                             .clipShape(Circle())
                                     }
                                     .buttonStyle(.plain)
@@ -308,10 +328,12 @@ struct FavoritesView: View {
         let idsCSV = ids.joined(separator: ",")
         guard !idsCSV.isEmpty else { return }
         
-        var components = URLComponents(string: "https://www.shoppo.co.nz/app/")!
-        components.queryItems = [
-            URLQueryItem(name: "fv", value: idsCSV)
-        ]
+        let components = URLComponents.apiEndpoint(
+            "",
+            queryItems: [
+                URLQueryItem(name: "fv", value: idsCSV)
+            ]
+        )
         guard let url = components.url else { return }
         
         do {
@@ -319,7 +341,8 @@ struct FavoritesView: View {
             guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else { return }
             let decoded = try JSONDecoder().decode(ProductsResponse.self, from: data)
             let products = decoded.results
-            
+            //let vendor = decoded.vendor
+
             await MainActor.run {
                 if replaceAll {
                     favorites.updateCache(with: products)

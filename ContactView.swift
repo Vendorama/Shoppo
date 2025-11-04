@@ -35,7 +35,7 @@ struct ContactView: View {
                 Section(header:
                     Text("Your Details")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .textCase(nil) // keep original casing, avoids all-caps
                 ) {
                     TextField("Name", text: $name)
@@ -63,7 +63,7 @@ struct ContactView: View {
                     if !email.isEmpty && !isValidEmail(email) {
                         Text("Please enter a valid email address.")
                             .font(.caption)
-                            .foregroundColor(.red)
+                            .foregroundStyle(.red)
                             .accessibilityLabel("Invalid email")
                     }
                 }
@@ -71,7 +71,7 @@ struct ContactView: View {
                 Section(header:
                     Text("Message")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .padding(.top, -10)
                         .padding(.bottom, 0)
                         .textCase(nil)
@@ -89,7 +89,7 @@ struct ContactView: View {
                             Spacer()
                             Text("\(message.count)/\(messageLimit)")
                                 .font(.caption)
-                                .foregroundColor(message.count >= messageLimit ? .red : .secondary)
+                                .foregroundStyle(message.count >= messageLimit ? .red : .secondary)
                         }
                     }
                 }
@@ -110,7 +110,7 @@ struct ContactView: View {
                 Section(header:
                     Text("Other ways to reach us")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .textCase(nil)
                 ) {
                     Link(destination: URL(string: "mailto:sean@shoppo.co.nz")!) {
@@ -126,7 +126,7 @@ struct ContactView: View {
                 Section(header:
                     Text("For our privacy and security policies please visit our website at www.shoppo.co.nz/privacy")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .textCase(nil)
                 ) {
                     
@@ -206,15 +206,16 @@ struct ContactView: View {
 
         Task {
             do {
-                var components = URLComponents(string: "https://www.shoppo.co.nz/app/contact")!
-                components.queryItems = [
-                    URLQueryItem(name: "message", value: message),
-                    URLQueryItem(name: "name", value: name),
-                    URLQueryItem(name: "url", value: url),
-                    URLQueryItem(name: "email", value: email),
-                    URLQueryItem(name: "hidden", value: hidden)
-                ]
-
+                let components = URLComponents.apiEndpoint(
+                    "contact",
+                    queryItems: [
+                        URLQueryItem(name: "message", value: message),
+                        URLQueryItem(name: "name", value: name),
+                        URLQueryItem(name: "url", value: url),
+                        URLQueryItem(name: "email", value: email),
+                        URLQueryItem(name: "hidden", value: hidden)
+                    ]
+                )
                 guard let url = components.url else {
                     throw URLError(.badURL)
                 }

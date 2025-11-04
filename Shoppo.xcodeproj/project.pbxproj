@@ -7,12 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14728E2F2EB039CA0088DA25 /* AccountPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14728E2E2EB039C20088DA25 /* AccountPlaceholderView.swift */; };
+		14728E312EB03B800088DA25 /* LogInViewPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14728E302EB03B760088DA25 /* LogInViewPlaceholder.swift */; };
+		1479E28C2EB3F5DA0021427F /* PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1479E28B2EB3F5CB0021427F /* PrivacyView.swift */; };
+		1479E28E2EB3F7B50021427F /* InfoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1479E28D2EB3F7B50021427F /* InfoContentView.swift */; };
+		1479E2902EB3FA1A0021427F /* TermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1479E28F2EB3FA160021427F /* TermsView.swift */; };
 		14906EAB2E98D69300C917D7 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14906EAA2E98D69300C917D7 /* AboutView.swift */; };
 		14906EAD2E98D69500C917D7 /* ContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14906EAC2E98D69500C917D7 /* ContactView.swift */; };
 		14906EDA2E9B023B00C917D7 /* AddURLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14906ED92E9B023200C917D7 /* AddURLView.swift */; };
 		14B7BF052E98A793005DCE4C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14B7BF042E98A793005DCE4C /* LaunchScreen.storyboard */; };
 		14DC476C2DB44C5900D33C86 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 14DC476B2DB44C5900D33C86 /* SDWebImageSwiftUI */; };
 		14F21EF32E9EDBBF009E925B /* FaqsView.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F21EF22E9EDBBF009E925B /* FaqsView.swift.swift */; };
+		14F21F1E2E9F4873009E925B /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 14F21F1D2E9F4872009E925B /* Secrets.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +39,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		14728E2E2EB039C20088DA25 /* AccountPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountPlaceholderView.swift; sourceTree = "<group>"; };
+		14728E302EB03B760088DA25 /* LogInViewPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewPlaceholder.swift; sourceTree = "<group>"; };
+		1479E28B2EB3F5CB0021427F /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
+		1479E28D2EB3F7B50021427F /* InfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoContentView.swift; sourceTree = "<group>"; };
+		1479E28F2EB3FA160021427F /* TermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsView.swift; sourceTree = "<group>"; };
+		1479E2912EB401F70021427F /* Untitled 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Untitled 2.swift"; sourceTree = "<group>"; };
 		14906EAA2E98D69300C917D7 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		14906EAC2E98D69500C917D7 /* ContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactView.swift; sourceTree = "<group>"; };
 		14906ED92E9B023200C917D7 /* AddURLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddURLView.swift; sourceTree = "<group>"; };
@@ -41,10 +53,11 @@
 		14DBC6BC2DB21BA40085D275 /* ShoppoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14DBC6C62DB21BA40085D275 /* ShoppoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14F21EF22E9EDBBF009E925B /* FaqsView.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqsView.swift.swift; sourceTree = "<group>"; };
+		14F21F1D2E9F4872009E925B /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		14B7BF012E989BB0005DCE4C /* Exceptions for "Shoppo" folder in "Shoppo" target */ = {
+		14F21F1F2E9F4A6A009E925B /* Exceptions for "Shoppo" folder in "Shoppo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -57,7 +70,7 @@
 		14DBC6AE2DB21BA30085D275 /* Shoppo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				14B7BF012E989BB0005DCE4C /* Exceptions for "Shoppo" folder in "Shoppo" target */,
+				14F21F1F2E9F4A6A009E925B /* Exceptions for "Shoppo" folder in "Shoppo" target */,
 			);
 			path = Shoppo;
 			sourceTree = "<group>";
@@ -103,15 +116,22 @@
 		14DBC6A32DB21BA30085D275 = {
 			isa = PBXGroup;
 			children = (
+				14F21F1D2E9F4872009E925B /* Secrets.xcconfig */,
 				14B7BF042E98A793005DCE4C /* LaunchScreen.storyboard */,
 				14DBC6AE2DB21BA30085D275 /* Shoppo */,
 				14DBC6BF2DB21BA40085D275 /* ShoppoAppTests */,
 				14DBC6C92DB21BA40085D275 /* ShoppoAppUITests */,
 				14DBC6AD2DB21BA30085D275 /* Products */,
 				14906EAA2E98D69300C917D7 /* AboutView.swift */,
+				14728E2E2EB039C20088DA25 /* AccountPlaceholderView.swift */,
+				14728E302EB03B760088DA25 /* LogInViewPlaceholder.swift */,
+				1479E28B2EB3F5CB0021427F /* PrivacyView.swift */,
+				1479E28F2EB3FA160021427F /* TermsView.swift */,
 				14F21EF22E9EDBBF009E925B /* FaqsView.swift.swift */,
+				1479E2912EB401F70021427F /* Untitled 2.swift */,
 				14906ED92E9B023200C917D7 /* AddURLView.swift */,
 				14906EAC2E98D69500C917D7 /* ContactView.swift */,
+				1479E28D2EB3F7B50021427F /* InfoContentView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -249,6 +269,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14F21F1E2E9F4873009E925B /* Secrets.xcconfig in Resources */,
 				14B7BF052E98A793005DCE4C /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,6 +299,11 @@
 				14F21EF32E9EDBBF009E925B /* FaqsView.swift.swift in Sources */,
 				14906EAB2E98D69300C917D7 /* AboutView.swift in Sources */,
 				14906EAD2E98D69500C917D7 /* ContactView.swift in Sources */,
+				1479E28C2EB3F5DA0021427F /* PrivacyView.swift in Sources */,
+				1479E2902EB3FA1A0021427F /* TermsView.swift in Sources */,
+				1479E28E2EB3F7B50021427F /* InfoContentView.swift in Sources */,
+				14728E312EB03B800088DA25 /* LogInViewPlaceholder.swift in Sources */,
+				14728E2F2EB039CA0088DA25 /* AccountPlaceholderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +339,7 @@
 /* Begin XCBuildConfiguration section */
 		14DBC6CE2DB21BA40085D275 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 14F21F1D2E9F4872009E925B /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -363,7 +390,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -377,6 +404,7 @@
 		};
 		14DBC6CF2DB21BA40085D275 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 14F21F1D2E9F4872009E925B /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -421,7 +449,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -445,12 +473,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shoppo/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_CFBundleDisplayName = Shoppo;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -477,12 +507,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shoppo/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_CFBundleDisplayName = Shoppo;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

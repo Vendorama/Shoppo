@@ -34,7 +34,7 @@ struct AddURLView: View {
                 Section(header:
                     Text("Enter the URL of your online store and we'll let you now when your store has been crawled by Shoppobot. ")
                         .font(.system(size: 14))
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .padding(.top, -60)
                         .padding(.bottom, -10)
                         .textCase(nil)
@@ -46,7 +46,7 @@ struct AddURLView: View {
                 Section(header:
                     Text("Your Details")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .textCase(nil) // keep original casing, avoids all-caps
                 ) {
                     TextField("Name", text: $name)
@@ -74,7 +74,7 @@ struct AddURLView: View {
                     if !email.isEmpty && !isValidEmail(email) {
                         Text("Please enter a valid email address.")
                             .font(.caption)
-                            .foregroundColor(.red)
+                            .foregroundStyle(.red)
                             .accessibilityLabel("Invalid email")
                     }
                 }
@@ -82,7 +82,7 @@ struct AddURLView: View {
                 Section(header:
                     Text("Message (optional)")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .padding(.top, -10)
                         .padding(.bottom, 0)
                         .textCase(nil)
@@ -100,7 +100,7 @@ struct AddURLView: View {
                             Spacer()
                             Text("\(message.count)/\(messageLimit)")
                                 .font(.caption)
-                                .foregroundColor(message.count >= messageLimit ? .red : .secondary)
+                                .foregroundStyle(message.count >= messageLimit ? .red : .secondary)
                         }
                     }
                 }
@@ -121,7 +121,7 @@ struct AddURLView: View {
                 Section(header:
                     Text("Note that your online store must be located in New Zealand and meet the minimum requirements as detailed at www.shoppo.co.nz/bot\n\nFor our privacy and security policies please visit our website at www.shoppo.co.nz/privacy")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .textCase(nil)
                 ) {
                     
@@ -203,14 +203,16 @@ struct AddURLView: View {
 
         Task {
             do {
-                var components = URLComponents(string: "https://www.shoppo.co.nz/app/contact")!
-                components.queryItems = [
-                    URLQueryItem(name: "message", value: message),
-                    URLQueryItem(name: "name", value: name),
-                    URLQueryItem(name: "url", value: url),
-                    URLQueryItem(name: "email", value: email),
-                    URLQueryItem(name: "subject", value: subject)
-                ]
+                let components = URLComponents.apiEndpoint(
+                    "contact",
+                    queryItems: [
+                        URLQueryItem(name: "message", value: message),
+                        URLQueryItem(name: "name", value: name),
+                        URLQueryItem(name: "url", value: url),
+                        URLQueryItem(name: "email", value: email),
+                        URLQueryItem(name: "subject", value: subject)
+                    ]
+                )
 
                 guard let url = components.url else {
                     throw URLError(.badURL)
