@@ -81,13 +81,11 @@ struct LoginView: View {
  */
             }
             .navigationTitle("Log In")
-            .padding(.top, -60)
             .formStyle(.grouped) // helps reduce the big top inset
             .navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(.hidden)
             .background(Color(.systemGroupedBackground))
-            .navigationBarTitleDisplayMode(.inline)
             
             /*
              HStack(spacing: 0) {

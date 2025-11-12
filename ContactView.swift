@@ -134,7 +134,6 @@ struct ContactView: View {
                 
             }
             //.offset(y: -130)
-            .padding(.top, -60)
             .formStyle(.grouped) // helps reduce the big top inset
             .navigationTitle("Contact Shoppo")
             .navigationBarHidden(true)

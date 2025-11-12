@@ -667,8 +667,8 @@ struct FiltersView: View {
     private func setSubLoading(_ loading: Bool) { isLoadingSubCats = loading }
 
     private func loadTopCategories() async {
-        await setTopLoading(true)
-        defer { Task { await setTopLoading(false) } }
+        setTopLoading(true)
+        defer { setTopLoading(false) }
         let components = URLComponents.apiEndpoint("categories")
         guard let url = components.url else { return }
         do {
@@ -715,8 +715,8 @@ struct FiltersView: View {
     }
 
     private func loadSubcategories(parentID: Int) async {
-        await setSubLoading(true)
-        defer { Task { await setSubLoading(false) } }
+        setSubLoading(true)
+        defer { setSubLoading(false) }
         let components = URLComponents.apiEndpoint(
             "categories",
             queryItems: [URLQueryItem(name: "id", value: String(parentID))]
@@ -755,8 +755,8 @@ struct FiltersView: View {
     private func setSubLocationLoading(_ loading: Bool) { isLoadingSubLocations = loading }
 
     private func loadTopLocations() async {
-        await setTopLocationLoading(true)
-        defer { Task { await setTopLocationLoading(false) } }
+        setTopLocationLoading(true)
+        defer { setTopLocationLoading(false) }
         let components = URLComponents.apiEndpoint("location")
         guard let url = components.url else { return }
         do {
@@ -772,8 +772,8 @@ struct FiltersView: View {
     }
 
     private func loadSubLocations(parentID: Int) async {
-        await setSubLocationLoading(true)
-        defer { Task { await setSubLocationLoading(false) } }
+        setSubLocationLoading(true)
+        defer { setSubLocationLoading(false) }
         let components = URLComponents.apiEndpoint(
             "location",
             queryItems: [URLQueryItem(name: "id", value: String(parentID))]
@@ -933,3 +933,4 @@ struct CheckboxToggleStyle: ToggleStyle {
         .contentShape(Rectangle())
     }
 }
+

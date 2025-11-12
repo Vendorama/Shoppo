@@ -297,11 +297,6 @@ struct FavoritesView: View {
     
     // MARK: - Networking
     
-    @MainActor
-    private func setLoading(_ value: Bool) {
-        isLoading = value
-    }
-    
     private func loadFromCacheThenFetchMissing() async {
         await MainActor.run {
             loadedFavorites = []
@@ -322,8 +317,8 @@ struct FavoritesView: View {
     }
     
     private func fetch(ids: [String], replaceAll: Bool) async {
-        await setLoading(true)
-        defer { Task { await setLoading(false) } }
+        await MainActor.run { isLoading = true }
+        defer { Task { await MainActor.run { isLoading = false } } }
         
         let idsCSV = ids.joined(separator: ",")
         guard !idsCSV.isEmpty else { return }

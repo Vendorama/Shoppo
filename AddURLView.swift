@@ -35,7 +35,6 @@ struct AddURLView: View {
                     Text("Enter the URL of your online store and we'll let you now when your store has been crawled by Shoppobot. ")
                         .font(.system(size: 14))
                         .foregroundStyle(.secondary)
-                        .padding(.top, -60)
                         .padding(.bottom, -10)
                         .textCase(nil)
                         .lineSpacing(5)
@@ -128,8 +127,6 @@ struct AddURLView: View {
                 }
                 
             }
-            //.offset(y: -130)
-            .padding(.top, -60)
             .formStyle(.grouped) // helps reduce the big top inset
             .navigationTitle("Add Store")
             .navigationBarHidden(true)

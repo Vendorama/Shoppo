@@ -95,7 +95,7 @@ If you have feedback or suggestions, I’d love to hear from you.
             "content",
             queryItems: [
                 URLQueryItem(name: "id", value: "\(id)"),
-                URLQueryItem(name: "ia", value: "\(id)")
+                URLQueryItem(name: "iu", value: "\(id)")
             ]
         )
         guard let url = components.url else {

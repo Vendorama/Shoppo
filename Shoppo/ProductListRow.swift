@@ -28,7 +28,7 @@ struct ProductListRow: View {
                             .fill(Color(.secondarySystemBackground))
                     }
                 }
-                .frame(width: 90, height: 90)
+                .frame(width: 120, height: 120)
                 .clipped()
                 .cornerRadius(8)
                 .contentShape(Rectangle())
@@ -50,17 +50,45 @@ struct ProductListRow: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .padding(0)
 
-                // Price (non-tappable)
-                PriceView(price: product.price, sale_price: product.sale_price)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 0) {
+                    // Price (non-tappable)
+                    PriceView(price: product.price, sale_price: product.sale_price)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(.headline)
+                    
 
+                    // Favorite toggle (visible)
+                    Button {
+                        favorites.toggleFavorite(product.id)
+                    } label: {
+                        Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
+                            .foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
+                            .frame(width: 30, height: 30)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+
+                    // Chevron -> triggers detail
+                    Button {
+                        onSelect()
+                    } label: {
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(Color(UIColor.tertiaryLabel))
+                            .frame(width: 60, height: 30)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(-10)
+                }
+                .padding(0)
                 // Vendor name -> vendor search (kept as requested)
                 Button {
                     dismissSearch()
                     viewModel.searchVendor(to: product.vendor_id)
                 } label: {
-                    /*
+                    /**/
                     Image("store")
                         .resizable()
                         .scaledToFit()
@@ -68,12 +96,13 @@ struct ProductListRow: View {
                         .frame(height: 11)
                         .opacity(0.5)
                         //.offset(x:1, y:1)
-                     */
+                     
                     Text(product.vendor_name)
                         .font(.subheadline)
                         .lineLimit(1)
                         .foregroundStyle(.secondary)
                         .contentShape(Rectangle())
+                        .offset(x:-2)
                 }
                 .buttonStyle(.plain)
                     /*
@@ -97,33 +126,11 @@ struct ProductListRow: View {
                     // Prefer product_id for the related endpoint
                     viewModel.searchRelated(to: product)
                 }
-                .font(.system(size: 12))
+                .padding(2)
+                .font(.system(size: 13))
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading )
             }
-
-            // Favorite toggle (visible)
-            Button {
-                favorites.toggleFavorite(product.id)
-            } label: {
-                Image(systemName: favorites.isFavorite(product.id) ? "heart.fill" : "heart")
-                    .foregroundStyle(favorites.isFavorite(product.id) ? .purple : .secondary)
-                    .frame(width: 30, height: 50)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-
-            // Chevron -> triggers detail
-            Button {
-                onSelect()
-            } label: {
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Color(UIColor.tertiaryLabel))
-                    .frame(width: 60, height: 70)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .padding(-10)
         }
         .contentShape(Rectangle())
     }

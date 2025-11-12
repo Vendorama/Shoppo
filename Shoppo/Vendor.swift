@@ -67,7 +67,7 @@ struct Vendor: Decodable, Hashable {
     let gender: Int?
     let restricted: Int?
     
-    // Stats
+    // product
     let views: Int?
     let clicks: Int?
     let likes: Int?

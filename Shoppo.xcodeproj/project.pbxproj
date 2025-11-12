@@ -17,8 +17,7 @@
 		14906EDA2E9B023B00C917D7 /* AddURLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14906ED92E9B023200C917D7 /* AddURLView.swift */; };
 		14B7BF052E98A793005DCE4C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14B7BF042E98A793005DCE4C /* LaunchScreen.storyboard */; };
 		14DC476C2DB44C5900D33C86 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 14DC476B2DB44C5900D33C86 /* SDWebImageSwiftUI */; };
-		14F21EF32E9EDBBF009E925B /* FaqsView.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F21EF22E9EDBBF009E925B /* FaqsView.swift.swift */; };
-		14F21F1E2E9F4873009E925B /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 14F21F1D2E9F4872009E925B /* Secrets.xcconfig */; };
+		14F21EF32E9EDBBF009E925B /* FaqsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F21EF22E9EDBBF009E925B /* FaqsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +43,6 @@
 		1479E28B2EB3F5CB0021427F /* PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyView.swift; sourceTree = "<group>"; };
 		1479E28D2EB3F7B50021427F /* InfoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoContentView.swift; sourceTree = "<group>"; };
 		1479E28F2EB3FA160021427F /* TermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsView.swift; sourceTree = "<group>"; };
-		1479E2912EB401F70021427F /* Untitled 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Untitled 2.swift"; sourceTree = "<group>"; };
 		14906EAA2E98D69300C917D7 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		14906EAC2E98D69500C917D7 /* ContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactView.swift; sourceTree = "<group>"; };
 		14906ED92E9B023200C917D7 /* AddURLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddURLView.swift; sourceTree = "<group>"; };
@@ -52,7 +50,7 @@
 		14DBC6AC2DB21BA30085D275 /* Shoppo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shoppo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14DBC6BC2DB21BA40085D275 /* ShoppoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14DBC6C62DB21BA40085D275 /* ShoppoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		14F21EF22E9EDBBF009E925B /* FaqsView.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqsView.swift.swift; sourceTree = "<group>"; };
+		14F21EF22E9EDBBF009E925B /* FaqsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqsView.swift; sourceTree = "<group>"; };
 		14F21F1D2E9F4872009E925B /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -127,8 +125,7 @@
 				14728E302EB03B760088DA25 /* LogInViewPlaceholder.swift */,
 				1479E28B2EB3F5CB0021427F /* PrivacyView.swift */,
 				1479E28F2EB3FA160021427F /* TermsView.swift */,
-				14F21EF22E9EDBBF009E925B /* FaqsView.swift.swift */,
-				1479E2912EB401F70021427F /* Untitled 2.swift */,
+				14F21EF22E9EDBBF009E925B /* FaqsView.swift */,
 				14906ED92E9B023200C917D7 /* AddURLView.swift */,
 				14906EAC2E98D69500C917D7 /* ContactView.swift */,
 				1479E28D2EB3F7B50021427F /* InfoContentView.swift */,
@@ -225,7 +222,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					14DBC6AB2DB21BA30085D275 = {
 						CreatedOnToolsVersion = 16.1;
@@ -269,7 +266,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14F21F1E2E9F4873009E925B /* Secrets.xcconfig in Resources */,
 				14B7BF052E98A793005DCE4C /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -296,7 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				14906EDA2E9B023B00C917D7 /* AddURLView.swift in Sources */,
-				14F21EF32E9EDBBF009E925B /* FaqsView.swift.swift in Sources */,
+				14F21EF32E9EDBBF009E925B /* FaqsView.swift in Sources */,
 				14906EAB2E98D69300C917D7 /* AboutView.swift in Sources */,
 				14906EAD2E98D69500C917D7 /* ContactView.swift in Sources */,
 				1479E28C2EB3F5DA0021427F /* PrivacyView.swift in Sources */,
@@ -480,7 +476,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -514,7 +510,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -32,7 +32,7 @@ Businesses with an online store can list their products so customers can click t
                             )
                             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Shoppo is designed and built by Sean Naden in Auckland, New Zealand. Sean has been designing online stores since 2000. Visit www.seannaden.co.nz")
+                        Text("Shoppo is designed and built by Sean Naden in Auckland, New Zealand. Sean has been designing online stores since 2000. Visit [sean.vendorama.com](https://sean.vendorama.com)")
                             .font(.system(size: 14))
                             .lineSpacing(2)
                         

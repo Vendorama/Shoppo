@@ -217,7 +217,6 @@ struct ProductDetailViewShoppo: View {
                 }
                 
             }
-            .padding(.top)
 
             .overlay(
                 HStack {
@@ -248,7 +247,7 @@ struct ProductDetailViewShoppo: View {
         }
         .background(Color(.systemBackground))
         .task {
-            await APIRequest.sendRequest(endpoint: "stats", id:  product.id)
+            await APIRequest.sendRequest(endpoint: "product", id:  product.id)
         }
     }
 }

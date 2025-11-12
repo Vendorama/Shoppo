@@ -116,7 +116,7 @@ struct BrowseView: View {
             .onTapGesture {
                 //textFieldIsFocused = false
             }
-            .background(Color(.systemBackground))
+            //.background(Color(.systemBackground))
             .onChange(of: textFieldIsFocused) { _, focused in
                 if viewModel.searchType == "vendor" {
                     if focused {
@@ -134,25 +134,27 @@ struct BrowseView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if viewModel.canGoBack {
-                        Button {
-                            viewModel.goBack()
-                            textFieldIsFocused = false
-                            dismissSearch()
-                            showIntro = false
-                        } label: {
-                            Label("Back", systemImage: "chevron.left")
+                ToolbarItem(placement: .topBarLeading) {
+                    
+                    //if viewModel.canGoBack {
+                        
+                   // } else {
+                        
+                        HStack {
+                            Button {
+                                viewModel.goBack()
+                                textFieldIsFocused = false
+                                dismissSearch()
+                                showIntro = false
+                            } label: {
+                                Label("Back", systemImage: "chevron.left")
+                            }
+                            .opacity(viewModel.canGoBack ? 1.0 : 0.0)
+                            informationIcon
                         }
-                        .font(.system(size: 14))
-                        .tint(.secondary)
-                        .opacity(viewModel.canGoBack ? 1.0:0.0)
-                    }
-                    VStack {
-                        informationIcon
-                    }
-                    .padding(0)
-                }
+                    //}
+                    
+               }
                 ToolbarItem(placement: .principal) {
                     Button(action: {
                         // Full reset to initial state
@@ -171,16 +173,19 @@ struct BrowseView: View {
                         Image("shoppo")
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 28)
+                            .frame(width: 111, height: 28)
+                            //.padding(.leading, 10)
+                            //.padding(.trailing, 10)
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 0) {
                             favoritesIcon
                             accountIcon
                     }
                 }
             }
+            //.glassEffect()
             .navigationDestination(item: $selectedProduct) { product in
                 ProductDetailViewShoppo(product: product, viewModel: viewModel)
             }
@@ -263,7 +268,7 @@ struct BrowseView: View {
         .sheet(item: $vendorItem) { item in
             NavigationView {
                 VendorDetailView(vendor: item.vendor)
-                    .navigationBarTitleDisplayMode(.inline)
+                    //.navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button("Done") { vendorItem = nil }
@@ -557,11 +562,12 @@ struct BrowseView: View {
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 16)
-            .background(Color(UIColor.systemBackground))
-            .cornerRadius(10)
-            .shadow(radius: 5)
-            .padding(.top, 12) // top position
-            Spacer()
+            //.background(Color(UIColor.systemBackground))
+            .glassEffect()
+            //.cornerRadius(10)
+            //.shadow(radius: 5)
+            //.padding(.top, 12) // top position
+            //Spacer()
         }
         .transition(.opacity)
         .animation(.easeInOut(duration: 0.5), value: animationValue)
@@ -673,11 +679,12 @@ struct BrowseView: View {
                                 Text(v.name ?? "Store")
                                     .font(.headline)
                                 if v.licence != 0 {
-                                    Image("verified")
+                                    Image(systemName: "checkmark.seal.fill")
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 16, height: 16)
                                         .offset(y: 2)
+                                        .foregroundStyle(Color(.blue))
                                 }
                             }
                             let addr: [String] = [
@@ -698,7 +705,7 @@ struct BrowseView: View {
                         Spacer()
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 10)
+                    .padding(.horizontal, 38)
                 }
                 .padding(.top, 4)
                 .padding(.bottom, 2)
@@ -779,6 +786,7 @@ struct BrowseView: View {
                             //textFieldIsFocused = false
                             dismissSearch()
                         })
+                        
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
@@ -894,7 +902,7 @@ struct BrowseView: View {
     @ViewBuilder
     private func ToTop(proxy: ScrollViewProxy) -> some View {
         if showToTop  {
-            
+            /**/
             Button(action: {
                 withAnimation {
                     proxy.scrollTo("top", anchor: .top) // Scroll to the top
@@ -904,11 +912,38 @@ struct BrowseView: View {
             }
                 .buttonStyle(.plain)
                 .font(.system(size: 50))
-                .foregroundStyle(Color.gray.opacity(0.15))
+                .foregroundStyle(Color.gray.opacity(0.1))
                 .padding(10)
                 .frame(width: 80, height: 80, alignment: .center)
+                .contentShape(Rectangle())
                 .clipped()
                 .clipShape(Circle())
+                .offset(x: 4)
+            
+            /*
+             
+             Button(action: {
+                 withAnimation {
+                     proxy.scrollTo("top", anchor: .top) // Scroll to the top
+                 }
+             }) {
+                 Label("", systemImage: "chevron.up")
+             }
+             
+                 //.buttonStyle(.plain)
+                 .font(.system(size: 30))
+                 .foregroundStyle(.secondary)
+                 .padding(.leading, 8)
+                 .padding(.top, 18)
+                 .padding(.bottom, 18)
+                 .opacity(0.3)
+                 .bold()
+                 .frame(width: 54, height: 54, alignment: .center)
+                 .clipped()
+                 .clipShape(Circle())
+                 .contentShape(Rectangle())
+                 .glassEffect()
+             */
         } else {
             EmptyView()
         }
@@ -944,7 +979,7 @@ struct BrowseView: View {
 
     private struct ContentResponse: Decodable {
         let content: String
-        let stats: String? // Make optional to match actual payload
+        let product: String? // Make optional to match actual payload
     }
     
     @MainActor
@@ -982,11 +1017,12 @@ struct BrowseView: View {
     }
 
     @MainActor
-    func loadStats(id: String) async {
+    func loadProduct(id: String) async {
         let components = URLComponents.apiEndpoint(
-            "stats",
+            "product",
             queryItems: [
-                //URLQueryItem(name: "x", value: "2"),
+                // todo, add comments:
+                //URLQueryItem(name: "comments", value: "1"),
                 URLQueryItem(name: "id", value: "\(id)")
             ]
         )
@@ -999,8 +1035,8 @@ struct BrowseView: View {
                 return
             }
             let decoded = try JSONDecoder().decode(ContentResponse.self, from: data)
-            let stats = decoded.stats
-            if stats?.isEmpty == true {
+            let product = decoded.product
+            if product?.isEmpty == true {
             } else {
             }
         } catch {
@@ -1228,6 +1264,9 @@ struct BrowseView: View {
         } label: {
             Label("Information", systemImage: "ellipsis.circle")
                 .labelStyle(.iconOnly)
+                .frame(width: 32, height: 32)
+                .contentShape(Rectangle())
+                .padding(.horizontal, 2)
         }
         .tint(.secondary)
         .accessibilityLabel("Information")

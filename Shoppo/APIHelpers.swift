@@ -40,6 +40,11 @@ extension URLComponents {
             items.append(URLQueryItem(name: "token", value: token))
             self.queryItems = items
         }
+        if let userID = UserIdentityClient.userID(), userID != 0 {
+            var items = self.queryItems ?? []
+            items.append(URLQueryItem(name: "user_id", value: String(userID)))
+            self.queryItems = items
+        }
     }
 
     static func apiEndpoint(_ path: String = "", queryItems: [URLQueryItem] = []) -> URLComponents {

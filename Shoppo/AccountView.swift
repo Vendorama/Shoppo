@@ -157,7 +157,6 @@ struct AccountView: View {
                
             }
             
-            .padding(.top, -60)
             .formStyle(.grouped) // helps reduce the big top inset
             .navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)
