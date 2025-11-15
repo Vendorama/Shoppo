@@ -49,6 +49,7 @@ struct Vendor: Decodable, Hashable {
     let url: String?
     let thumb: String?
     let username: String?
+    let vendor_id: Int?
     let products: Int?
     let licence: Int?
 
@@ -78,6 +79,7 @@ struct Vendor: Decodable, Hashable {
         case url
         case thumb
         case username
+        case vendor_id
         case products
         case licence
         case address1
@@ -112,8 +114,9 @@ struct Vendor: Decodable, Hashable {
         email = try c.decodeIfPresent(String.self, forKey: .email)
         phone = try c.decodeIfPresent(String.self, forKey: .phone)
         description = try c.decodeIfPresent(String.self, forKey: .description)
-        
+
         // Flexible Int-or-String fields
+        vendor_id = try FlexibleInt.decode(c, forKey: .vendor_id)
         products = try FlexibleInt.decode(c, forKey: .products)
         licence = try FlexibleInt.decode(c, forKey: .licence)
         category_id = try FlexibleInt.decode(c, forKey: .category_id)

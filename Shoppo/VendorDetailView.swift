@@ -11,7 +11,8 @@ struct VendorDetailView: View {
     @State private var coordinate: CLLocationCoordinate2D?
     @State private var isGeocoding: Bool = false
     @State private var geocodeError: String?
-
+    @State private var showSafari = false
+    
     // Only use map when we have a street address (address1)
     private var hasStreetAddress: Bool {
         let addr1 = (vendor.address1 ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
@@ -23,8 +24,8 @@ struct VendorDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
                 // Header
                 HStack(spacing: 12) {
-                    if let thumb = vendor.thumb, let url = apiURL(thumb) {
-                        WebImage(url: url)
+                    if let thumb = vendor.thumb, let imageURL = apiURL(thumb) {
+                        WebImage(url: imageURL)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 72, height: 72)
@@ -50,11 +51,31 @@ struct VendorDetailView: View {
                                     .foregroundStyle(Color(.blue))
                             }
                         }
+                        /*
                         if let urlStr = vendor.url, let host = URL(string: urlStr)?.host {
                             Text(host)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
+                            Link(destination: URL(string: urlStr)!) {
+                                Label(host, systemImage: "")
+                            }
                         }
+                         */
+                        if let urlStr = vendor.url, let url = URL(string: urlStr) {
+                            let host = url.host ?? url.absoluteString
+                            Button {
+                                showSafari = true
+                            } label: {
+                                Text(host)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .sheet(isPresented: $showSafari) {
+                                SafariView(url: url)
+                            }
+                        }
+                         
+                         
                     }
                     Spacer()
                 }
@@ -115,7 +136,8 @@ struct VendorDetailView: View {
         
         .formStyle(.grouped) // helps reduce the big top inset
         //.navigationBarHidden(true)
-        //.navigationBarTitleDisplayMode(.inline)
+        //
+        .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
         //.background(Color(.systemGroupedBackground))
         
@@ -276,3 +298,4 @@ private struct AnnotatedPin: Identifiable {
     let title: String
     let coordinate: CLLocationCoordinate2D
 }
+

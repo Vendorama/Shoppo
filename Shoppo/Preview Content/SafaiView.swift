@@ -1,7 +1,8 @@
 import SwiftUI
 import SafariServices
 
-struct SafariView: UIViewControllerRepresentable {
+/*
+struct SafariWebView: UIViewControllerRepresentable {
     let url: URL
 
     func makeUIViewController(context: Context) -> SFSafariViewController {
@@ -12,3 +13,5 @@ struct SafariView: UIViewControllerRepresentable {
         // Nothing to update
     }
 }
+
+*/

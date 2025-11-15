@@ -1,6 +1,22 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+#if canImport(SafariServices)
+import SafariServices
+
+struct ProductSafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        SFSafariViewController(url: url)
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
+        // No-op
+    }
+}
+#endif
+
 struct ProductRowView: View {
     let product: Product
     @ObservedObject var viewModel: SearchViewModel
@@ -284,9 +300,9 @@ struct ProductRowViewVendor: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .padding(.horizontal)
-                .sheet(isPresented: $showSafari) {
-                    SafariView(url: thisurl)
-                }
+                .sheet(isPresented: $showSafari, content: {
+                    ProductSafariView(url: thisurl)
+                })
             }
         }
     }
@@ -368,3 +384,4 @@ struct ProductRowView_Previews: PreviewProvider {
     }
 }
 #endif
+

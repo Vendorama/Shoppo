@@ -421,6 +421,7 @@ struct FiltersView: View {
                     .frame(maxWidth: .infinity, maxHeight: 320, alignment: .leading)
                 }
             }
+            /*
 
             if viewModel.selectedTopCategoryID == nil || viewModel.selectedTopCategoryID == 900 {
                 Section {
@@ -449,7 +450,7 @@ struct FiltersView: View {
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }
-            
+            */
             Section {
                 HStack {
                     Button("Clear All", role: .destructive) {
@@ -489,10 +490,12 @@ struct FiltersView: View {
                         isDirty = false
                         onClear()
                     }
+                    /*
                     Spacer()
                     Button("Reset 18+ flag") {
                         ageVerified18Plus = false
                     }
+                     */
                 }
             }
         }

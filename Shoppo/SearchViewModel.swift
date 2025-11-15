@@ -16,6 +16,7 @@ class SearchViewModel: ObservableObject {
         "new",
         "trending",
         "similar",
+        "new",
         "new arrivals",
         "for you"
     ]
@@ -317,6 +318,8 @@ class SearchViewModel: ObservableObject {
         default:
             if let vq = normalizedVQ {
                 queryItems.append(URLQueryItem(name: "vq", value: vq))
+            } else if let realvq = realVQ, !realvq.isEmpty {
+                queryItems.append(URLQueryItem(name: "vq", value: realvq))
             }
             
             if !selectedSubcategoryIDs.isEmpty {
@@ -326,8 +329,6 @@ class SearchViewModel: ObservableObject {
                 queryItems.append(URLQueryItem(name: "vc", value: String(subID)))
             } else if let topID = selectedTopCategoryID {
                 queryItems.append(URLQueryItem(name: "vc", value: String(topID)))
-            } else if let realvq = realVQ {
-                queryItems.append(URLQueryItem(name: "vh", value: realvq))
             }
             
             if !selectedSubLocationIDs.isEmpty {
@@ -354,8 +355,9 @@ class SearchViewModel: ObservableObject {
         if restrictedOnly {
             queryItems.append(URLQueryItem(name: "restricted", value: "1"))
         }
-        
-        queryItems.append(URLQueryItem(name: "page", value: String(currentPage)))
+        if currentPage > 1 {
+            queryItems.append(URLQueryItem(name: "page", value: String(currentPage)))
+        }
         
         print("[SearchVM] QueryItems: " + queryItems.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&"))
         

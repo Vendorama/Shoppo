@@ -22,6 +22,7 @@ struct BrowseView: View {
 
     // Layout toggle persisted like FavoritesView
     @AppStorage("browse_layout") private var showGrid: Bool = true
+    @AppStorage("show_trending") private var showTrending: Bool = false
 
     // Sheet presentation state
     @State private var showAboutSheet = false
@@ -105,8 +106,14 @@ struct BrowseView: View {
                     }
                     .task {
                         if viewModel.products.isEmpty && viewModel.searchType == "search" {
-                            print("[ContentView] First-load trigger: refreshing first page (vq=, page=1)")
-                            viewModel.refreshFirstPage()
+                            if showTrending {
+                                // Persisted preference: load trending feed on first open
+                                viewModel.query = "trending"
+                                viewModel.search(reset: true, thisType: "search")
+                            } else {
+                                print("[ContentView] First-load trigger: refreshing first page (vq=, page=1)")
+                                viewModel.refreshFirstPage()
+                            }
                         }
                         await loadContent(id: 1)
                     }
@@ -686,7 +693,49 @@ struct BrowseView: View {
                                         .offset(y: 2)
                                         .foregroundStyle(Color(.blue))
                                 }
+                                
+                              
+                                // TODO: add favorites button
+                                let vendorFavoriteID = "\(v.vendor_id ?? 0).0"
+                                Button {
+                                    favorites.toggleFavorite(vendorFavoriteID)
+                                } label: {
+                                    Image(systemName: favorites.isFavorite(vendorFavoriteID) ? "heart.fill" : "heart")
+                                        .foregroundStyle(favorites.isFavorite(vendorFavoriteID) ? .purple : .secondary)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(favorites.isFavorite(vendorFavoriteID) ? "Remove vendor from favourites" : "Add vendor to favourites")
                             }
+                            /*
+                            HStack {
+                                
+                                
+                                if let clicks = v.clicks {
+                                    Text("\(clicks) clicks")
+                                        .foregroundStyle(.secondary)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 5)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 20.0)
+                                                .stroke(Color.secondary, lineWidth: 1)
+                                                .opacity(0.3)
+                                            )
+                                }
+                                
+                                if let views = v.views {
+                                    Text("\(views) views")
+                                        .foregroundStyle(.secondary)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 5)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 20.0)
+                                                .stroke(Color.secondary, lineWidth: 1)
+                                                .opacity(0.3)
+                                            )
+                                }
+                                
+                            }
+                             */
                             let addr: [String] = [
                                 v.address2 ?? "",
                                 v.city ?? ""
@@ -770,10 +819,10 @@ struct BrowseView: View {
     @ViewBuilder
     private var layoutTitle: some View {
         HStack {
-            if viewModel.searchType == "search" && viewModel.activeFiltersCount == 0 && (viewModel.lastQuery.isEmpty || viewModel.lastQuery == "trending") {
+            if viewModel.searchType == "search" && viewModel.activeFiltersCount == 0 && (viewModel.lastQuery.isEmpty || viewModel.lastQuery == "trending" || showTrending == true) {
                 HStack {
-                    if viewModel.lastQuery == "" {
-                        Text("New Arrivals")
+                    if viewModel.lastQuery == "", showTrending == false {
+                        Text("New")
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
                             .overlay(
@@ -783,10 +832,10 @@ struct BrowseView: View {
                         Button("Trending", action: {
                             viewModel.query = "trending"
                             viewModel.search(reset: true, thisType: "search")
+                            showTrending = true
                             //textFieldIsFocused = false
                             dismissSearch()
                         })
-                        
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
@@ -796,9 +845,10 @@ struct BrowseView: View {
                                 .opacity(0.3)
                         )
                     } else {
-                        Button("New Arrivals", action: {
+                        Button("New", action: {
                             viewModel.query = ""
                             viewModel.search(reset: true, thisType: "search")
+                            showTrending = false
                             //textFieldIsFocused = false
                             dismissSearch()
                         })
@@ -810,7 +860,6 @@ struct BrowseView: View {
                                 .stroke(Color.secondary, lineWidth: 1)
                                 .opacity(0.3)
                         )
-
                         Text("Trending")
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
@@ -1329,7 +1378,7 @@ struct BrowseView: View {
                 .padding(.trailing, 10)
         }
         .tint(.secondary)
-        .accessibilityLabel("Information")
+        .accessibilityLabel("Account")
     }
 
     // Session check for context-aware account action
@@ -1387,3 +1436,5 @@ struct BrowseView: View {
         viewModel.refreshFirstPage()
     }
 }
+
+
