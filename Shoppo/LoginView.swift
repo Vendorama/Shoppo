@@ -14,7 +14,7 @@ struct LoginView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Log in").font(.footnote).foregroundStyle(.secondary).textCase(nil)) {
+                Section(header: Text("Log in").foregroundStyle(.secondary).textCase(nil)) {
                     TextField("Email", text: $email)
                         .keyboardType(.emailAddress)
                         .textContentType(.emailAddress)
@@ -26,7 +26,7 @@ struct LoginView: View {
                 if let errorMessage {
                     Section {
                         Text(errorMessage)
-                            .font(.footnote)
+                            //.font(.footnote)
                             .foregroundStyle(.red)
                     }
                 }
@@ -60,7 +60,7 @@ struct LoginView: View {
                     Text("To reset password visit www.shoppo.co.nz/password")
                     
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.footnote)
+                        //.font(.footnote)
                 }
                 .listRowBackground(Color.clear)
                 .padding(0)
@@ -82,7 +82,7 @@ struct LoginView: View {
             }
             .navigationTitle("Log In")
             .formStyle(.grouped) // helps reduce the big top inset
-            .navigationBarHidden(true)
+            //.navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(.hidden)
             .background(Color(.systemGroupedBackground))
@@ -137,10 +137,27 @@ struct LoginView: View {
     private func signIn() async {
         await setSubmitting(true)
         defer { Task { await setSubmitting(false) } }
+
+        // Ensure any previous session/identity is cleared before a new login
+        await MainActor.run {
+            UserIdentityClient.logout()
+        }
+
         do {
+            // Perform login
             _ = try await UserIdentityClient.login(email: email, password: password)
+
+            // Refresh identity and (optionally) profile so downstream views see the new user
+            _ = await UserIdentityClient.fetchOrCreate()
+            do {
+                // Warm the account cache if available; ignore errors
+                _ = try await UserIdentityClient.fetchAccount()
+            } catch {
+                // no-op: profile prefetch failure shouldn't block login flow
+            }
+
             await MainActor.run {
-                // Notify listeners (if any) and show success alert
+                // Notify listeners and show success alert
                 NotificationCenter.default.post(name: .didLogin, object: nil)
                 showSuccessAlert = true
             }

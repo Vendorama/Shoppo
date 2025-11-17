@@ -34,7 +34,7 @@ struct ContactView: View {
                 // First section with a minimal header to shrink top inset
                 Section(header:
                     Text("Your Details")
-                        .font(.footnote)
+                        //.font(.footnote)
                         .foregroundStyle(.secondary)
                         .textCase(nil) // keep original casing, avoids all-caps
                 ) {
@@ -70,7 +70,7 @@ struct ContactView: View {
                 
                 Section(header:
                     Text("Message")
-                        .font(.footnote)
+                        //.font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.top, -10)
                         .padding(.bottom, 0)
@@ -109,7 +109,7 @@ struct ContactView: View {
 
                 Section(header:
                     Text("Other ways to reach us")
-                        .font(.footnote)
+                        //.font(.footnote)
                         .foregroundStyle(.secondary)
                         .textCase(nil)
                 ) {
@@ -125,7 +125,7 @@ struct ContactView: View {
                 }
                 Section(header:
                     Text("For our privacy and security policies please visit our website at www.shoppo.co.nz/privacy")
-                        .font(.footnote)
+                        //.font(.footnote)
                         .foregroundStyle(.secondary)
                         .textCase(nil)
                 ) {

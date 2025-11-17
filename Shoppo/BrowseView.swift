@@ -78,30 +78,31 @@ struct BrowseView: View {
                 ScrollViewReader { proxy in
                     ZStack {
                         contentArea(columns: columns, proxy: proxy)
-
-                        if showUpdatedToast {
-                            updatedMessage(
-                                message: "Updated",
-                                icon: "checkmark.circle.fill",
-                                iconColor: .green,
-                                animationValue: showUpdatedToast
-                            )
-                        }
-                        if showLoginToast {
-                            updatedMessage(
-                                message: "You have been logged in.",
-                                icon: "person.crop.circle.badge.checkmark",
-                                iconColor: .green,
-                                animationValue: showLoginToast
-                            )
-                        }
-                        if showLogoutToast {
-                            updatedMessage(
-                                message: "You have been logged out.",
-                                icon: "person.crop.circle.badge.xmark",
-                                iconColor: .green,
-                                animationValue: showLogoutToast
-                            )
+                    }
+                    .overlay(alignment: .top) {
+                        Group {
+                            if showUpdatedToast {
+                                updatedMessage(
+                                    message: "Updated",
+                                    icon: "checkmark.circle.fill",
+                                    iconColor: .green,
+                                    animationValue: showUpdatedToast
+                                )
+                            } else if showLoginToast {
+                                updatedMessage(
+                                    message: "You have been logged in.",
+                                    icon: "person.crop.circle.badge.checkmark",
+                                    iconColor: .green,
+                                    animationValue: showLoginToast
+                                )
+                            } else if showLogoutToast {
+                                updatedMessage(
+                                    message: "You have been logged out.",
+                                    icon: "person.crop.circle.badge.xmark",
+                                    iconColor: .green,
+                                    animationValue: showLogoutToast
+                                )
+                            }
                         }
                     }
                     .task {
@@ -156,7 +157,7 @@ struct BrowseView: View {
                             } label: {
                                 Label("Back", systemImage: "chevron.left")
                             }
-                            .opacity(viewModel.canGoBack ? 1.0 : 0.0)
+                            .opacity(viewModel.canGoBack ? 1.0 : 0.1)
                             informationIcon
                         }
                     //}
@@ -390,18 +391,6 @@ struct BrowseView: View {
             showLoginToastBriefly()
             // No need to do anything else; isLoggedIn reads from UserDefaults and will flip
         }
-        // Observe logout completion to show confirmation and refresh UI
-        .onReceive(NotificationCenter.default.publisher(for: .didLogout).receive(on: RunLoop.main)) { _ in
-            // Close any presented sheets
-            showLoginSheet = false
-            showAccountSheet = false
-            // Small delay to ensure any menu/sheet dismissal finishes before showing the toast
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                // Show confirmation toast
-                showLogoutToastBriefly()
-            }
-            // UI will re-evaluate isLoggedIn automatically
-        }
     }
     
     // MARK: - Extracted content to simplify type-checking
@@ -569,13 +558,15 @@ struct BrowseView: View {
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 16)
-            //.background(Color(UIColor.systemBackground))
             .glassEffect()
-            //.cornerRadius(10)
-            //.shadow(radius: 5)
-            //.padding(.top, 12) // top position
-            //Spacer()
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.top, 8)
+
+            Spacer() // Push content to the top
         }
+        //.ignoresSafeArea(edges: .top)
+        .zIndex(1000)
+        .allowsHitTesting(false)
         .transition(.opacity)
         .animation(.easeInOut(duration: 0.5), value: animationValue)
     }
@@ -1354,8 +1345,8 @@ struct BrowseView: View {
                 Task { await openAccount() }
             } else {
                 // When logged out, open Login (not Account)
-                showLoginSheet = true
-                showAccountSheet = false
+                showLoginSheet = false
+                showAccountSheet = true
             }
         } label: {
             Label("Account", systemImage: "person.crop.circle")
@@ -1436,5 +1427,4 @@ struct BrowseView: View {
         viewModel.refreshFirstPage()
     }
 }
-
 

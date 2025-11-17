@@ -142,8 +142,8 @@ struct FavoritesView: View {
                  */
             }
         } label: {
-            Image(systemName: showVendors ? "square.grid.4x3.fill" : "storefront")
-                //.opacity(showVendors ? 1.0 : 0.4)
+            Image(systemName: showVendors ? "storefront" : "storefront")
+                .opacity(showVendors ? 1.0 : 0.2)
         }
         .accessibilityLabel(showVendors ? "Show products" : "Show vendors")
     }

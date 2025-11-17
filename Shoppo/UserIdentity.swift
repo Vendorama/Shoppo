@@ -104,6 +104,7 @@ enum UserIdentityClient {
             }
             let identity = try JSONDecoder().decode(UserIdentity.self, from: data)
             UserIdentityStore.save(identity)
+              print("[Identity] Saved new user_id=\(identity.user_id)")
             // Do not set email/first_name here; this is an anonymous identity
             return identity
         } catch {

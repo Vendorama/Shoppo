@@ -44,7 +44,7 @@ struct AddURLView: View {
                 // First section with a minimal header to shrink top inset
                 Section(header:
                     Text("Your Details")
-                        .font(.footnote)
+                        //.font(.footnote)
                         .foregroundStyle(.secondary)
                         .textCase(nil) // keep original casing, avoids all-caps
                 ) {
@@ -80,7 +80,7 @@ struct AddURLView: View {
                 
                 Section(header:
                     Text("Message (optional)")
-                        .font(.footnote)
+                        //.font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.top, -10)
                         .padding(.bottom, 0)

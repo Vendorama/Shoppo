@@ -44,19 +44,25 @@ struct AccountView: View {
     var body: some View {
         NavigationView {
             Form {
-                /*
-                // If logged out, show Sign In CTA
                 if !isLoggedIn {
-                    Section(header: Text("Log in").font(.footnote).foregroundStyle(.secondary).textCase(nil)) {
+                    Section {
                         Button {
                             showLogin = true
                         } label: {
-                            Label("Log In with Email", systemImage: "person.crop.circle.badge.key")
+                            Text("(Please log in if you have an account)")
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        //.font(.footnote)
                     }
+                    .listRowBackground(Color.clear)
+                    .padding(0)
+                    .padding(.bottom, 10)
+                    .listSectionSpacing(0)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                 */
-                Section(header: Text("Account").font(.footnote).foregroundStyle(.secondary).textCase(nil)) {
+                
+                Section(header: Text(isLoggedIn ? "My Account" : "Create Account").foregroundStyle(.secondary).textCase(nil)) {
                     TextField("Email", text: $email)
                         .keyboardType(.emailAddress)
                         .textContentType(.emailAddress)
@@ -71,7 +77,7 @@ struct AccountView: View {
                         Text("To reset password visit www.shoppo.co.nz/password")
                         
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.footnote)
+                            //.font(.footnote)
                     }
                     .listRowBackground(Color.clear)
                     .padding(0)
@@ -80,7 +86,7 @@ struct AccountView: View {
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                Section(header: Text("Profile").font(.footnote).foregroundStyle(.secondary).textCase(nil)) {
+                Section(header: Text("Profile").foregroundStyle(.secondary).textCase(nil)) {
                     TextField("First name", text: $firstName)
                         .textContentType(.givenName)
                     TextField("Last name", text: $lastName)
@@ -102,14 +108,14 @@ struct AccountView: View {
                 if let errorMessage {
                     Section {
                         Text(errorMessage)
-                            .font(.footnote)
+                            //.font(.footnote)
                             .foregroundStyle(.red)
                     }
                 }
                 if let successMessage {
                     Section {
                         Text(successMessage)
-                            .font(.footnote)
+                            //.font(.footnote)
                             .foregroundStyle(.green)
                     }
                 }
@@ -121,10 +127,11 @@ struct AccountView: View {
                         if isSubmitting { ProgressView() } else {
                             HStack {
                                 Spacer()
-                                Text("Update Account")
-                                    .foregroundColor(.white)
-                                    .bold()
-                                    .font(.headline)
+                                Text(isLoggedIn ? "Update Account" : "Create Account")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .font(.headline)
+                                
                                 Spacer()
                             }
                             .frame(maxWidth: .infinity)
@@ -145,7 +152,7 @@ struct AccountView: View {
                     Section {
                         Text("To edit your profile or delete your account please visit www.shoppo.co.nz/account\n\nFor privacy and security policies please visit www.shoppo.co.nz/privacy")
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.footnote)
+                            //.font(.footnote)
                     }
                     .listRowBackground(Color.clear)
                     .padding(0)
@@ -158,20 +165,20 @@ struct AccountView: View {
             }
             
             .formStyle(.grouped) // helps reduce the big top inset
-            .navigationBarHidden(true)
+            //.navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(.hidden)
             .background(Color(.systemGroupedBackground))
             
             .navigationTitle("Account")
             .navigationBarTitleDisplayMode(.inline)
-            /**/
+            /*
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
                 }
             }
-             
+             */
             .task {
                 // Refresh from server even if we had a prefill to ensure latest values
                 if isLoggedIn {
@@ -192,6 +199,21 @@ struct AccountView: View {
                         }
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: .didLogin)) { _ in
+                // After a successful login, refresh from server so fields reflect the new account
+                Task { try? await prefillFromServer() }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .didLogout)) { _ in
+                // Clear UI fields on logout to avoid showing stale data
+                firstName = ""
+                lastName = ""
+                email = UserIdentityClient.storedEmail() ?? "" // likely empty after logout
+                phone = ""
+                address1 = ""
+                address2 = ""
+                city = ""
+                postcode = ""
+            }
         }
     }
 /*
@@ -204,6 +226,7 @@ struct AccountView: View {
         return false
     }
  */
+
     private var isLoggedIn: Bool {
     guard
 
