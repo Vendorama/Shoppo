@@ -318,7 +318,8 @@ class SearchViewModel: ObservableObject {
         default:
             if let vq = normalizedVQ {
                 queryItems.append(URLQueryItem(name: "vq", value: vq))
-            } else if let realvq = realVQ, !realvq.isEmpty {
+            } else if let realvq = realVQ, !realvq.isEmpty, activeFiltersCount == 0 {
+                // trending, new
                 queryItems.append(URLQueryItem(name: "vq", value: realvq))
             }
             
@@ -408,9 +409,9 @@ class SearchViewModel: ObservableObject {
                 if self.debugLogging {
                     print("[SearchVM] Decoded \(newProducts.count) items on page \(self.currentPage). Append: \(append)")
                     print("[SearchVM] Total results: \(response.total_rs)")
-                    if self.searchType == "vendor" {
+                    //if self.searchType == "vendor" {
                         print("[SearchVM] Vendor payload count: \(newVendor.count)")
-                    }
+                    //}
                 }
                 DispatchQueue.main.async {
                     self.totalResults = response.total_rs
@@ -428,6 +429,15 @@ class SearchViewModel: ObservableObject {
                         self.products.append(contentsOf: filtered)
                     } else {
                         self.products = filtered
+                    }
+                    /* */
+                    // If this was a normal search but the API returned vendor details (exact match),
+                    // switch to vendor mode and display the vendor header/details.
+                    if self.searchType == "search", newVendor.count == 1 {
+                        self.searchType = "vendor"
+                        self.query = ""
+                        self.currentVendorID = newVendor.first?.vendor_id.map(String.init)
+                        
                     }
                     
                     if self.searchType == "vendor" {
@@ -598,3 +608,4 @@ extension SearchViewModel {
         }
     }
 }
+

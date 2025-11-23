@@ -7,6 +7,7 @@ struct AboutView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 
+                
                 Text("""
 Shoppo is discovery shopping platform for New Zealand retailers to showcase, promote and sell their products. Shoppo makes it easier for kiwis to **shop local** for over 2 million products from over 12 thousand online stores from around New Zealand.
 
@@ -32,7 +33,7 @@ Businesses with an online store can list their products so customers can click t
                             )
                             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Shoppo is designed and built by Sean Naden in Auckland, New Zealand. Sean has been designing online stores since 2000. Visit [sean.vendorama.com](https://sean.vendorama.com)")
+                        Text("Shoppo is designed and built by Sean Naden in Auckland, New Zealand. Sean has been designing online stores since 2000. Visit [sean.shoppo.co.nz](https://sean.shoppo.co.nz)")
                             .font(.system(size: 14))
                             .lineSpacing(2)
                         
@@ -56,7 +57,7 @@ Businesses with an online store can list their products so customers can click t
                     .font(.body)
                     .foregroundStyle(.primary)
                 
-                
+                /*
                 HStack(spacing: 12) {
                     Image("vendorama")
                         .resizable()
@@ -84,8 +85,18 @@ If you have feedback or suggestions, I’d love to hear from you.
                 .buttonStyle(.borderless)
                 .tint(.accentColor)
                 .padding(.top, 4)
+                */
                 
-                
+                    
+                    
+                        InfoContentView(
+                            title: "About Shoppo",
+                            contentId: 7,
+                            fallback: "",
+                            footerText: "",
+                            showContact: true,
+                            extraContent: nil
+                        )
                 Section(header:
                     Text("\nFor our privacy and security policies please visit our website at www.shoppo.co.nz/privacy\n\nFor our terms and conditions please visit our website at www.shoppo.co.nz/terms\n\n")
                         .font(.footnote)

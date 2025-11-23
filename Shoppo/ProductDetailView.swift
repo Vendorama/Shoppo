@@ -37,6 +37,11 @@ struct ProductDetailViewShoppo: View {
 
                 // Title / price
                 VStack(alignment: .leading, spacing: 8) {
+                    
+                    PriceView(price: product.price, sale_price: product.sale_price)
+                        .font(.system(size: 26))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    
                     Text(product.name)
                         .font(.system(size: 16))
                         .lineLimit(6)
@@ -44,10 +49,6 @@ struct ProductDetailViewShoppo: View {
                         .frame(maxWidth: .infinity)
                         .tint(.primary)
                         .background(Color(.systemBackground))
-
-                    PriceView(price: product.price, sale_price: product.sale_price)
-                        .font(.system(size: 26))
-                        .frame(maxWidth: .infinity, alignment: .center)
 
                     if !product.vendor_name.isEmpty {
                         Button(action: {
@@ -102,12 +103,23 @@ struct ProductDetailViewShoppo: View {
                         showSafari = true
                     } label: {
                         Text("View on website")
+                            .frame(maxWidth: .infinity)
+                            .padding(6)
+                        /*
                             .font(.body.weight(.semibold))
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.accentColor.opacity(0.1))
                             .cornerRadius(10)
+                         */
                     }
+                    .font(.body.weight(.semibold))
+                    //.frame(maxWidth: .infinity)
+                    //.padding()
+                    //
+                    .buttonStyle(.glassProminent)
+                    //
+                    .glassEffect(.regular.interactive())
                     .padding(.horizontal)
                     .sheet(isPresented: $showSafari) {
                         SafariView(url: url)

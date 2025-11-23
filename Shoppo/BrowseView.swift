@@ -13,7 +13,6 @@ private struct VendorItem: Identifiable {
     let vendor: Vendor
 }
 
-// The original browsing UI, now with a toolbar Menu presenting About/Contact as sheets
 struct BrowseView: View {
     @StateObject private var viewModel = SearchViewModel()
     @FocusState private var textFieldIsFocused: Bool
@@ -45,8 +44,8 @@ struct BrowseView: View {
     @State private var applyFiltersToNextSearch: Bool = false
 
     // Intro content state
-    private let introFallback = "Shop for over 2,048,298 products in 12,638 stores from around New Zealand"
-    @State private var introText: String = "Shop for over 2,048,298 products in 12,638 stores from around New Zealand"
+    private let introFallback = "Shop for over 2,448,298 products in 14,538 stores from around New Zealand"
+    @State private var introText: String = "Shop for over 2,448,298 products in 14,538 stores from around New Zealand"
 
     // Toast state
     @State private var lastUpdated: Date?
@@ -560,7 +559,6 @@ struct BrowseView: View {
             .padding(.vertical, 16)
             .glassEffect()
             .frame(maxWidth: .infinity, alignment: .center)
-            .padding(.top, 8)
 
             Spacer() // Push content to the top
         }
@@ -1324,6 +1322,8 @@ struct BrowseView: View {
                 showAccountSheet = false
                 showLoginSheet = false
                 print("[Account] Logged out. email=\(UserIdentityClient.storedEmail() ?? "(nil)")")
+                // Show logout confirmation toast
+                showLogoutToastBriefly()
             } label: {
                 Label("Log Out", systemImage: "rectangle.portrait.and.arrow.right")
             }
