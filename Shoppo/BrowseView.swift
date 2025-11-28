@@ -22,6 +22,50 @@ struct BrowseView: View {
     // Layout toggle persisted like FavoritesView
     @AppStorage("browse_layout") private var showGrid: Bool = true
     @AppStorage("show_trending") private var showTrending: Bool = false
+    
+    // Persisted recent searches (most recent first)
+    @AppStorage("recent_searches") private var recentSearchesData: Data = Data()
+    private func readRecentSearches() -> [String] {
+        if recentSearchesData.isEmpty { return [] }
+        return (try? JSONDecoder().decode([String].self, from: recentSearchesData)) ?? []
+    }
+
+    private func writeRecentSearches(_ newValue: [String]) {
+        recentSearchesData = (try? JSONEncoder().encode(newValue)) ?? Data()
+    }
+
+    // MARK: - Recent Searches
+    
+    private func clearRecentSearches() {
+        writeRecentSearches([])
+    }
+    
+    private func addRecentSearch(_ term: String) {
+        let trimmed = term.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        let lower = trimmed.lowercased()
+        var current = readRecentSearches().filter { $0.lowercased() != lower }
+        current.insert(trimmed, at: 0)
+        if current.count > 20 { current = Array(current.prefix(20)) }
+        writeRecentSearches(current)
+    }
+
+    private func matchingRecents(for query: String) -> [String] {
+        let q = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !q.isEmpty else { return [] }
+        // show recents that contain the query substring; prefer prefix matches by sorting
+        let filtered = readRecentSearches().filter { $0.lowercased().contains(q) }
+        // Sort: prefix matches first, then alphabetical
+        return filtered.sorted { a, b in
+            let al = a.lowercased(), bl = b.lowercased()
+            let aPref = al.hasPrefix(q), bPref = bl.hasPrefix(q)
+            if aPref != bPref { return aPref && !bPref }
+            return al < bl
+        }
+    }
+
+    // Visual feedback for clearing recents
+    @State private var didClearHistory: Bool = false
 
     // Sheet presentation state
     @State private var showAboutSheet = false
@@ -42,6 +86,18 @@ struct BrowseView: View {
 
     // New: whether to apply existing filters to the next text search
     @State private var applyFiltersToNextSearch: Bool = false
+
+    // Search suggestions state
+    @State private var suggestions: [String] = []
+    @State private var isFetchingSuggestions: Bool = false
+    @State private var suggestTask: Task<Void, Never>? = nil
+    
+    // Suppress showing suggestions (both API and recents) when we've just executed a search
+    @State private var suppressSuggestions: Bool = false
+
+    private struct SuggestResponse: Decodable {
+        let results: [String]
+    }
 
     // Intro content state
     private let introFallback = "Shop for over 2,448,298 products in 14,538 stores from around New Zealand"
@@ -138,6 +194,15 @@ struct BrowseView: View {
                 // When user focuses the search field during normal search, show the toggle and default it to OFF
                 if viewModel.searchType == "search" && focused {
                     applyFiltersToNextSearch = false
+                    suppressSuggestions = false
+                }
+
+                // When the search field loses focus, hide any visible suggestions and stop fetching
+                if focused == false {
+                    suggestions = []
+                    isFetchingSuggestions = false
+                    suggestTask?.cancel()
+                    suppressSuggestions = true
                 }
             }
             .toolbar {
@@ -390,6 +455,9 @@ struct BrowseView: View {
             showLoginToastBriefly()
             // No need to do anything else; isLoggedIn reads from UserDefaults and will flip
         }
+        .onDisappear {
+            suggestTask?.cancel()
+        }
     }
     
     // MARK: - Extracted content to simplify type-checking
@@ -472,6 +540,7 @@ struct BrowseView: View {
         }
         .padding(EdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7))
         .navigationBarTitleDisplayMode(.inline)
+        // search box
         .searchable(
             text: Binding<String>(
                 get: {
@@ -491,40 +560,191 @@ struct BrowseView: View {
             prompt: "discover, shop, buy ..."
         )
         .onSubmit(of: .search) {
-            //textFieldIsFocused = false
-
+            suppressSuggestions = true
             if viewModel.searchType == "vendor", viewModel.withinVendorSearch {
+                // vendor path ignores the toggle and refreshes
                 viewModel.currentPage = 1
                 viewModel.refreshFirstPage()
+                addRecentSearch(viewModel.query)
             } else {
-                // Handle filters based on toggle for normal searches
+                // apply filters based on the toggle
                 if applyFiltersToNextSearch {
-                    // Include filters as-is
                     viewModel.search(reset: true, thisType: "search")
+                    addRecentSearch(viewModel.query)
                 } else {
-                    // Permanently clear filters before this search
+                    // clear filters then search
                     viewModel.priceFrom = nil
                     viewModel.priceTo = nil
                     viewModel.onSale = false
-                    // Comment out raw resets for testing
-                    // viewModel.priceFromRaw = nil
-                    // viewModel.priceToRaw = nil
                     viewModel.restrictedOnly = false
                     viewModel.selectedTopCategoryID = nil
                     viewModel.selectedTopCategoryName = nil
                     viewModel.selectedSubcategoryID = nil
                     viewModel.selectedSubcategoryName = nil
-                    
                     viewModel.selectedTopLocationID = nil
                     viewModel.selectedTopLocationName = nil
                     viewModel.selectedSubLocationID = nil
                     viewModel.selectedSubLocationName = nil
-
                     viewModel.search(reset: true, thisType: "search")
+                    addRecentSearch(viewModel.query)
+                }
+            }
+        }
+        .searchSuggestions {
+            /*
+             // this is unnecessary, causes a screen jump
+            if isFetchingSuggestions {
+                HStack {
+                    ProgressView()
+                    Text("Searching suggestions…")
+                }
+            }
+             */
+            if textFieldIsFocused && suppressSuggestions == false && viewModel.query != viewModel.lastQuery {
+                let recents = matchingRecents(for: viewModel.query)
+                let apiItems = suggestions
+                let dedupedAPI = apiItems.filter { api in
+                    !recents.contains(where: { $0.caseInsensitiveCompare(api) == .orderedSame })
+                }
+                let combined = recents + dedupedAPI
+                if !combined.isEmpty {
+                    ForEach(combined, id: \.self) { item in
+                        HStack {
+                            Button {
+                                // Apply the suggestion to the query and submit a search
+                                suggestTask?.cancel()
+                                isFetchingSuggestions = false
+                                suggestions = []
+                                suppressSuggestions = true
+                                viewModel.query = item
+                                textFieldIsFocused = false
+                                dismissSearch()
+                                Task { @MainActor in
+                                    try? await Task.sleep(nanoseconds: 120_000_000)
+                                    if viewModel.searchType == "vendor", viewModel.withinVendorSearch {
+                                        viewModel.currentPage = 1
+                                        viewModel.refreshFirstPage()
+                                        addRecentSearch(viewModel.query)
+                                    } else {
+                                        if applyFiltersToNextSearch {
+                                            viewModel.search(reset: true, thisType: "search")
+                                            addRecentSearch(viewModel.query)
+                                        } else {
+                                            // Clear filters for this search
+                                            viewModel.priceFrom = nil
+                                            viewModel.priceTo = nil
+                                            viewModel.onSale = false
+                                            viewModel.restrictedOnly = false
+                                            viewModel.selectedTopCategoryID = nil
+                                            viewModel.selectedTopCategoryName = nil
+                                            viewModel.selectedSubcategoryID = nil
+                                            viewModel.selectedSubcategoryName = nil
+                                            viewModel.selectedTopLocationID = nil
+                                            viewModel.selectedTopLocationName = nil
+                                            viewModel.selectedSubLocationID = nil
+                                            viewModel.selectedSubLocationName = nil
+                                            viewModel.search(reset: true, thisType: "search")
+                                            addRecentSearch(viewModel.query)
+                                        }
+                                    }
+                                    // Ensure suggestions stay hidden after navigation
+                                    suggestTask?.cancel()
+                                    isFetchingSuggestions = false
+                                    suggestions = []
+                                }
+                            } label: {
+                                HStack {
+                                    Image(systemName: "magnifyingglass")
+                                        .foregroundStyle(.secondary)
+                                        .padding(.leading, 12)
+                                    Text(item)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                }
+                                .padding(.vertical, 0)
+                                .padding(.horizontal, 0)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+
+                            Button {
+                                viewModel.query = item
+                            } label: {
+                                Image(systemName: "arrow.up.left.circle")
+                                        .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 8)
+                        }
+                    }
+                    
+                    // Clear history row
+                    if !recents.isEmpty {
+                        HStack {
+                            Button {
+                                // Clear only the recents, keep API suggestions intact
+                                clearRecentSearches()
+                                // Provide subtle visual feedback
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    didClearHistory = true
+                                }
+                                // Reset the flag after a short delay so it can animate again next time
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        didClearHistory = false
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundStyle(.tertiary)
+                                    Text("Clear history")
+                                        .foregroundStyle(.secondary)
+                                        .opacity(didClearHistory ? 0.5 : 1.0)
+                                    Spacer()
+                                }
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 12)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .padding(.top, 6)
+                    }
                 }
             }
         }
         .searchFocused($textFieldIsFocused)
+        .onChange(of: viewModel.query) { oldValue, newValue in
+            // Cancel any in-flight suggestion task
+            suggestTask?.cancel()
+            suppressSuggestions = false
+
+            // Trim and guard against short/empty queries and excluded queries
+            let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty || SearchViewModel.excludedQueries.contains(trimmed.lowercased()) {
+                suggestions = []
+                isFetchingSuggestions = false
+                return
+            }
+            // For very short queries, skip API but still allow recents to appear
+            if trimmed.count < 2 {
+                suggestions = []
+                isFetchingSuggestions = false
+                return
+            }
+
+            // Debounce fetch ~250ms
+            suggestTask = Task { [trimmed] in
+                do {
+                    try await Task.sleep(nanoseconds: 250_000_000)
+                    try Task.checkCancellation()
+                    await fetchSuggestions(for: trimmed)
+                } catch {
+                    // cancellation or errors are ignored for UX smoothness
+                }
+            }
+        }
         .refreshable {
             print("[ContentView] Pull-to-refresh triggered")
             hapticRefresh()
@@ -536,6 +756,11 @@ struct BrowseView: View {
         .onChange(of: viewModel.isLoading) { oldValue, newValue in
             if oldValue == true && newValue == false {
                 lastUpdated = Date()
+                // Hide any lingering suggestions after results load
+                suggestTask?.cancel()
+                isFetchingSuggestions = false
+                suggestions = []
+                suppressSuggestions = true
             }
         }
     }
@@ -582,6 +807,39 @@ struct BrowseView: View {
         withAnimation { showLogoutToast = true }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.6) {
             withAnimation { showLogoutToast = false }
+        }
+    }
+
+    @MainActor
+    private func fetchSuggestions(for query: String) async {
+        isFetchingSuggestions = true
+        defer { isFetchingSuggestions = false }
+
+        // Build using the shared apiEndpoint helper so API key, token, etc. are appended.
+        let components = URLComponents.apiEndpoint(
+            "suggest",
+            queryItems: [
+                URLQueryItem(name: "vq", value: query)
+            ]
+        )
+        guard let url = components.url else {
+            suggestions = []
+            return
+        }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                suggestions = []
+                return
+            }
+            let decoded = try JSONDecoder().decode(SuggestResponse.self, from: data)
+            //var seen = Set<String>()
+            //let uniquePreservingOrder = decoded.results.filter { seen.insert($0).inserted }
+            //suggestions = Array(uniquePreservingOrder.prefix(12))
+            suggestions = Array(decoded.results.prefix(12))
+        } catch {
+            suggestions = []
         }
     }
 
